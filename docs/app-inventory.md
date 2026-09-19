@@ -103,13 +103,19 @@ EN/FR only, no framework — custom signal-based content bundles. Android equiva
   carrying the *idea* forward (different model per use case) even though the specific Android
   networking layer will look different.
 
+## Decisions made
+
+1. **API access: keep calling OpenAI/Pinecone directly from the app; no backend proxy.** Keys live
+   in an untracked file (`local.properties`, already gitignored), read by Gradle and exposed as
+   `BuildConfig` fields (e.g. via the Secrets Gradle Plugin). Same tradeoff as the original app:
+   keys are extractable from the built APK, so this is only acceptable for a personal,
+   non-distributed app. Revisit before any Play Store release.
+
 ## Open decisions for the Android rewrite
 
 These aren't answered by this inventory — flagging them as things to decide deliberately in
 Phase 1 (architecture) rather than defaulting silently:
 
-1. Keep calling OpenAI/Pinecone directly from the app, or introduce a backend proxy so API keys
-   aren't embedded in a shipped APK?
 2. Replace the flat-JSON-blob gallery storage with Room from day one (recommended) — gives a
    real place to learn Room, migrations, and querying/filtering with SQL instead of in-memory
    `computed()` filtering.
