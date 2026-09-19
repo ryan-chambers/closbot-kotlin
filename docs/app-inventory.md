@@ -123,6 +123,8 @@ EN/FR only, no framework — custom signal-based content bundles. Android equiva
 5. **Fake services: kept, as a fake repository swapped in via DI (Hilt).** Repository interfaces
    get a real and a fake implementation, so UI work and tests don't call OpenAI or Pinecone.
 
+6. **No GitHub remote for now.** The repo stays local-only until the app is much further along.
+
 ## Open decisions for the Android rewrite
 
-- Whether `closbot-kotlin` gets a GitHub remote (local-only for now).
+None outstanding from the inventory.
