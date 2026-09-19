@@ -124,12 +124,36 @@ installed side by side (needed for exporting the old photos). Chosen at skeleton
 
 ## Build order
 
-1. `feature/skeleton-app`: Gradle project, Hilt, theme, navigation shell with tabs, and a first
-   end-to-end slice (chat with the fake repository, then a real OpenAI call), with tests.
-2. Notes and gallery with Room, photo capture, and the old-photo import.
-3. Label reading, menu reading, and Pinecone RAG.
-4. Vintage report, settings, EN/FR.
-5. Cross-cutting: logging and flagging, error states, accessibility, performance pass.
+Each branch teaches one concept, ends with the app building and tests green, and is small
+enough to review in one sitting. If a branch grows past that, split it.
+
+**Phase 1: foundation (done).** `feature/skeleton-app`: Gradle project on the current toolchain,
+theme, and a "Hello" screen that runs on the phone.
+
+**Phase 2: app shell and the chat slice.** The first end-to-end feature, built from the bottom
+of the stack up so that each step is testable before the next one exists.
+
+| # | Branch | Contents | Concept |
+|---|---|---|---|
+| 1 | `feature/navigation-shell` | Bottom navigation bar and placeholder screens, type-safe routes, labels in `strings.xml`. No Hilt, no logic. | Navigation Compose, `Scaffold`, insets |
+| 2 | `feature/hilt-setup` | Hilt and KSP in the version catalog, an `Application` class, `@AndroidEntryPoint`, and one trivial injected class to prove the wiring. | DI |
+| 3 | `feature/assistant-repository` | `WineAssistantRepository` interface, fake implementation, Hilt binding. Plain Kotlin with unit tests, no UI. | Repository pattern, fakes, Flow |
+| 4 | `feature/chat-viewmodel` | `ChatUiState` and `ChatViewModel`, tested with Turbine. No screen yet. | ViewModel, `StateFlow`, unidirectional data flow |
+| 5 | `feature/chat-screen` | Chat composable driven by the `ViewModel`, with a Compose UI test. | State hoisting, `LazyColumn`, lifecycle-aware collection |
+| 6 | `feature/chat-openai` | Secrets via `local.properties`, then the real OpenAI call. The Retrofit-versus-SDK decision is made here. | Networking, `BuildConfig` |
+
+Hilt is isolated in step 2 because it is the biggest tooling risk: the Hilt and KSP versions must
+work with AGP 9's built-in Kotlin, and that is easier to debug in a small branch.
+
+In the navigation shell, edit note is a destination with an id argument reached from the gallery,
+not a bottom-bar tab. The tabs are chat, add note, gallery and vintage.
+
+**Later phases.** These get broken into small branches like phase 2 when we reach them.
+
+3. Notes and gallery with Room, photo capture, and the old-photo import.
+4. Label reading, menu reading, and Pinecone RAG.
+5. Vintage report, settings, EN/FR.
+6. Cross-cutting: logging and flagging, error states, accessibility, performance pass.
 
 ## SDK level consequences
 
