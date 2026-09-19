@@ -118,13 +118,11 @@ EN/FR only, no framework — custom signal-based content bundles. Android equiva
    debuggable. Photos and notes can be pulled with `adb run-as com.ryanthink.closbot` (photo files
    from `files/`, notes from `shared_prefs/CapacitorStorage.xml`) with no change to the old app,
    then imported once into Room. Do this later, when the phone is attached.
+4. **Vintage reference data: bundled JSON asset**, parsed at startup. It is read-only, so it needs
+   no Room schema or migrations, and it can be edited without touching code.
+5. **Fake services: kept, as a fake repository swapped in via DI (Hilt).** Repository interfaces
+   get a real and a fake implementation, so UI work and tests don't call OpenAI or Pinecone.
 
 ## Open decisions for the Android rewrite
 
-These aren't answered by this inventory — flagging them as things to decide deliberately in
-Phase 1 (architecture) rather than defaulting silently:
-
-4. How much of the Burgundy-specific vintage reference data stays hardcoded in code vs. becomes a
-   bundled JSON/Room-seeded dataset.
-5. Whether "fake services" (offline/demo mode) is worth carrying forward as a build variant or
-   dependency-injected fake, for easier UI development without burning API calls.
+- Whether `closbot-kotlin` gets a GitHub remote (local-only for now).
