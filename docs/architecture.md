@@ -37,7 +37,7 @@ when the skeleton app is created.
 | Build | Gradle Kotlin DSL + version catalog (`libs.versions.toml`) | Current standard; one place for versions | Groovy DSL |
 | Secrets | `local.properties` (gitignored) exposed as `BuildConfig` fields | Decided; see the inventory | Committing keys |
 | i18n | `strings.xml` in `values/` and `values-fr/` | Platform-native; replaces the hand-rolled `ContentService`. Per-app language via the `LocaleManager` / AppCompat per-app language API | Custom content bundles |
-| Min SDK | 26 (Android 8.0) | Covers nearly all devices, avoids desugaring workarounds | Lower: extra compat work for no benefit |
+| SDK levels | `minSdk` = `targetSdk` = `compileSdk` = 35 (Android 15) | Personal, sideloaded app on a single device (Android 17), so no reason to support old versions. Removes `Build.VERSION` branches and the AppCompat per-app-language backport (the platform `LocaleManager` is available from 33). 35 is a level we know well, unlike the newest one | `minSdk` 26 (extra compat code for no benefit); 37 (newest, but tooling and behavior changes are less familiar) |
 | Testing | JUnit, kotlinx-coroutines-test, Turbine (Flow), MockK or fakes, Room in-memory DB, Compose UI tests | Covers each layer; see Testing | Instrumented-only testing |
 
 ## Layers
@@ -130,8 +130,16 @@ installed side by side (needed for exporting the old photos). Chosen at skeleton
 4. Vintage report, settings, EN/FR.
 5. Cross-cutting: logging and flagging, error states, accessibility, performance pass.
 
+## SDK level consequences
+
+- Targeting 35 enforces edge-to-edge drawing, so screens must handle window insets (Compose
+  Scaffold and `enableEdgeToEdge()`), which is current best practice anyway.
+- Choosing `minSdk` to match a single device means we skip practising backward-compatibility
+  handling. Revisit `minSdk` using Play Console install data before any publication.
+
 ## Deferred / revisit later
 
+- Raising `targetSdk`/`compileSdk` above 35 once the tooling and behavior changes are familiar.
 - Streaming chat responses (the old backlog item). Design the chat repository to return a
   `Flow` of partial text so streaming is an implementation detail, not a rewrite.
 - Backend proxy for API keys, only before any Play Store release.
