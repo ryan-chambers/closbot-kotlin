@@ -111,15 +111,20 @@ EN/FR only, no framework — custom signal-based content bundles. Android equiva
    keys are extractable from the built APK, so this is only acceptable for a personal,
    non-distributed app. Revisit before any Play Store release.
 
+2. **Local storage: Room for gallery/notes**, replacing the flat JSON blob. Photos stay as files in
+   the app's private `filesDir`; the table stores only the file name. Search/tag filtering becomes
+   SQL queries exposed as `Flow`s.
+3. **Migrating existing photos**: the old app was installed via Android Studio, so it is
+   debuggable. Photos and notes can be pulled with `adb run-as com.ryanthink.closbot` (photo files
+   from `files/`, notes from `shared_prefs/CapacitorStorage.xml`) with no change to the old app,
+   then imported once into Room. Do this later, when the phone is attached.
+
 ## Open decisions for the Android rewrite
 
 These aren't answered by this inventory — flagging them as things to decide deliberately in
 Phase 1 (architecture) rather than defaulting silently:
 
-2. Replace the flat-JSON-blob gallery storage with Room from day one (recommended) — gives a
-   real place to learn Room, migrations, and querying/filtering with SQL instead of in-memory
-   `computed()` filtering.
-3. How much of the Burgundy-specific vintage reference data stays hardcoded in code vs. becomes a
+4. How much of the Burgundy-specific vintage reference data stays hardcoded in code vs. becomes a
    bundled JSON/Room-seeded dataset.
-4. Whether "fake services" (offline/demo mode) is worth carrying forward as a build variant or
+5. Whether "fake services" (offline/demo mode) is worth carrying forward as a build variant or
    dependency-injected fake, for easier UI development without burning API calls.
