@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">ClosBot</string>
+
+    <string name="nav_chat">Chat</string>
+    <string name="nav_add_note">Add note</string>
+    <string name="nav_gallery">Gallery</string>
+    <string name="nav_vintage">Vintage</string>
+
+    <string name="screen_chat">Chat screen</string>
+    <string name="screen_add_note">Add note screen</string>
+    <string name="screen_gallery">Gallery screen</string>
+    <string name="screen_edit_note">Editing note %1$d</string>
+    <string name="screen_vintage">Vintage screen</string>
+
+    <string name="gallery_open_sample_note">Open sample note</string>
 </resources>
