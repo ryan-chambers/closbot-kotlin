@@ -4,6 +4,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import androidx.test.espresso.Espresso
 import org.junit.Rule
 import org.junit.Test
@@ -45,5 +46,17 @@ class NavigationShellTest {
         Espresso.pressBack()
 
         composeRule.onNodeWithText(text(R.string.screen_gallery)).assertIsDisplayed()
+    }
+
+    @Test
+    fun switchingTabsKeepsTheChatConversation() {
+        composeRule.onNodeWithText(text(R.string.chat_input_hint)).performTextInput("What pairs with duck?")
+        composeRule.onNodeWithText(text(R.string.chat_send)).performClick()
+        composeRule.onNodeWithText("What pairs with duck?").assertIsDisplayed()
+
+        composeRule.onNodeWithText(text(R.string.nav_vintage)).performClick()
+        composeRule.onNodeWithText(text(R.string.nav_chat)).performClick()
+
+        composeRule.onNodeWithText("What pairs with duck?").assertIsDisplayed()
     }
 }
