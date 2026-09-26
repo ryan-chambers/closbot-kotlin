@@ -17,7 +17,7 @@ class NavigationShellTest {
 
     @Test
     fun startsOnChatWithAllTabsVisible() {
-        composeRule.onNodeWithText(text(R.string.screen_chat)).assertIsDisplayed()
+        composeRule.onNodeWithText(text(R.string.chat_greeting)).assertIsDisplayed()
         listOf(R.string.nav_chat, R.string.nav_add_note, R.string.nav_gallery, R.string.nav_vintage)
             .forEach { composeRule.onNodeWithText(text(it)).assertIsDisplayed() }
     }
