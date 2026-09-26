@@ -35,7 +35,7 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             var replyStarted = false
             repository.invokeChat(message)
-                .catch { _uiState.update { it.copy(isWaiting = false, hasError = true) } }
+                .catch { _uiState.update { state -> state.copy(isWaiting = false, hasError = true) } }
                 .collect { reply ->
                     _uiState.update { it.withAssistantReply(reply, replace = replyStarted) }
                     replyStarted = true
