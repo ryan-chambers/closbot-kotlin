@@ -1,0 +1,3 @@
+# Copy the line you need into your own local.properties (gitignored, never committed).
+
+OPENAI_API_KEY=sk-...

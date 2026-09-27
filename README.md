@@ -12,6 +12,12 @@ for the feature/architecture inventory of the original app that this rewrite is 
 - The original `closbot` repo is never modified.
 - No commits land directly on `main` — all work happens on branches.
 
+## Setup
+
+Copy [`local.properties.example`](local.properties.example) into `local.properties` (already
+gitignored) and fill in the values you need. `OPENAI_API_KEY` is only required once
+`feature/openai-repository` starts making real calls; until then it can be left blank.
+
 ## Status
 
 Early setup — see `docs/` for planning documents.

@@ -140,7 +140,9 @@ of the stack up so that each step is testable before the next one exists.
 | 3 | `feature/assistant-repository` | `WineAssistantRepository` interface, fake implementation, Hilt binding. Plain Kotlin with unit tests, no UI. | Repository pattern, fakes, Flow |
 | 4 | `feature/chat-viewmodel` | `ChatUiState` and `ChatViewModel`, tested with Turbine. No screen yet. | ViewModel, `StateFlow`, unidirectional data flow |
 | 5 | `feature/chat-screen` | Chat composable driven by the `ViewModel`, with a Compose UI test. | State hoisting, `LazyColumn`, lifecycle-aware collection |
-| 6 | `feature/chat-openai` | Secrets via `local.properties`, then the real OpenAI call. The Retrofit-versus-SDK decision is made here. | Networking, `BuildConfig` |
+| 6 | `feature/openai-config` | `local.properties` → `BuildConfig.OPENAI_API_KEY`. No networking yet. | Secrets, `BuildConfig` |
+| 7 | `feature/openai-repository` | Retrofit-versus-SDK decision, real `WineAssistantRepository` implementation, unit tested against a fake HTTP layer. Not wired into the app yet. | Networking |
+| 8 | `feature/openai-di` | Swap the Hilt binding from fake to real, gated by build variant or a debug flag. | DI, build variants |
 
 Hilt is isolated in step 2 because it is the biggest tooling risk: the Hilt and KSP versions must
 work with AGP 9's built-in Kotlin, and that is easier to debug in a small branch.
