@@ -1,5 +1,6 @@
 package com.ryanthink.closbotkt.app
 
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -55,7 +56,7 @@ fun ClosBotApp(navController: NavHostController = rememberNavController()) {
         NavHost(
             navController = navController,
             startDestination = ChatRoute,
-            modifier = Modifier.padding(innerPadding),
+            modifier = Modifier.padding(innerPadding).consumeWindowInsets(innerPadding),
         ) {
             composable<ChatRoute> { ChatScreen() }
             composable<AddNoteRoute> { AddNoteScreen() }
