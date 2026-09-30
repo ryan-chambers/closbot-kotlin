@@ -2,6 +2,7 @@ package com.ryanthink.closbotkt.data.assistant.openai
 
 import com.ryanthink.closbotkt.data.assistant.WineAssistantRepository
 import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -11,8 +12,11 @@ import kotlinx.coroutines.flow.flow
  * [ResponsesApiRequest.previousResponseId], so this class only ever sends the newest message, not
  * the whole transcript.
  *
- * Not yet bound in Hilt — see feature/openai-di.
+ * [Singleton] because [previousResponseId] is this app's one conversation's state; a fresh
+ * instance per injection would silently drop it and start a new conversation with OpenAI on every
+ * screen recreation.
  */
+@Singleton
 class OpenAiWineAssistantRepository @Inject constructor(
     private val api: OpenAiApi,
 ) : WineAssistantRepository {

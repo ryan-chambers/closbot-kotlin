@@ -37,6 +37,18 @@ android {
         buildConfigField("String", "OPENAI_API_KEY", "\"$openAiApiKey\"")
     }
 
+    // demo binds a canned, offline WineAssistantRepository; prod binds the real OpenAI-backed one.
+    // See AssistantModule.kt in each flavor's source set.
+    flavorDimensions += "repository"
+    productFlavors {
+        create("demo") {
+            dimension = "repository"
+        }
+        create("prod") {
+            dimension = "repository"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
