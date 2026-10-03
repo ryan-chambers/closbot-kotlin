@@ -1,3 +1,4 @@
+- more experimenting with suspend vs. flow. How similar are they to Promise vs. Observable?
 
 DONE
 - move code out of ~/Documents
