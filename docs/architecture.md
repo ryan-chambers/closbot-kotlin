@@ -150,9 +150,21 @@ work with AGP 9's built-in Kotlin, and that is easier to debug in a small branch
 In the navigation shell, edit note is a destination with an id argument reached from the gallery,
 not a bottom-bar tab. The tabs are chat, add note, gallery and vintage.
 
-**Later phases.** These get broken into small branches like phase 2 when we reach them.
+**Phase 3: notes and gallery.** Room, photo capture, and the old-photo import. Same bottom-up
+shape as phase 2: storage, then repository, then ViewModel, then screen.
 
-3. Notes and gallery with Room, photo capture, and the old-photo import.
+| # | Branch | Contents | Concept |
+|---|---|---|---|
+| 1 | `feature/room-setup` | Room dependency, `WineNoteEntity`, DAO, `AppDatabase`, Hilt module. Tested against an in-memory DB. | Room basics, DI for a database |
+| 2 | `feature/note-repository` | `WineNoteRepository` interface wrapping the DAO (real) + fake, entity↔domain mapping. | Repository pattern over Room, `Flow` |
+| 3 | `feature/gallery-viewmodel` | `GalleryUiState`/`GalleryViewModel`: notes list, search/tag filter, from the repository. Turbine-tested. | `StateFlow`, combining flows |
+| 4 | `feature/gallery-screen` | `LazyVerticalGrid` driven by the ViewModel, Coil for photo thumbnails. | Grid layout, Coil, nav to edit-note |
+| 5 | `feature/add-note` | Add-note form + photo capture (Photo Picker / `TakePicture` contract), saves via repository. Note text is a plain field for now; AI label pre-fill comes in phase 4. | Activity-result contracts, form state |
+| 6 | `feature/edit-note` | Edit/detail screen reached by id (`edit-note/{id}`), update/delete. | Nav arguments, editing an existing entity |
+| 7 | `feature/photo-import` | One-time `adb run-as` pull of old app's photos and `CapacitorStorage.xml` notes, imported into Room. | Data migration, not much new Android concept — mostly a script/tool |
+
+**Later phases.** These get broken into small branches like phases 2 and 3 when we reach them.
+
 4. Label reading, menu reading, and Pinecone RAG.
 5. Vintage report, settings, EN/FR.
 6. Cross-cutting: logging and flagging, error states, accessibility, performance pass.
