@@ -54,7 +54,7 @@ class GalleryViewModel @Inject constructor(
 }
 
 private fun buildState(notes: List<WineNote>, term: String, requestedTag: String?): GalleryUiState {
-    val allLabels = notes.flatMap { it.labels }.distinct().sorted()
+    val allLabels = notes.flatMap { it.labels }.toSet()
     // The requested tag may have disappeared (its last note was edited or deleted); ignore it then
     // rather than showing an empty grid under a filter the user can no longer see a reason for.
     val tag = requestedTag?.takeIf { it in allLabels }
@@ -73,7 +73,8 @@ private fun buildState(notes: List<WineNote>, term: String, requestedTag: String
         matchingLabels = if (needle.isEmpty() || tag != null) {
             emptyList()
         } else {
-            allLabels.filter { it.contains(needle, ignoreCase = true) }
+            // Only the suggestions are shown in order, so that's the only place that sorts.
+            allLabels.filter { it.contains(needle, ignoreCase = true) }.sorted()
         },
     )
 }
