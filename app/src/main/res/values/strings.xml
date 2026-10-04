@@ -7,11 +7,15 @@
     <string name="nav_vintage">Vintage</string>
 
     <string name="screen_add_note">Add note screen</string>
-    <string name="screen_gallery">Gallery screen</string>
     <string name="screen_edit_note">Editing note %1$d</string>
     <string name="screen_vintage">Vintage screen</string>
 
-    <string name="gallery_open_sample_note">Open sample note</string>
+    <string name="gallery_search_hint">Search by label</string>
+    <string name="gallery_clear_tag">Clear filter %1$s</string>
+    <string name="gallery_empty">No notes yet. Add one from the Add note tab.</string>
+    <string name="gallery_no_matches">No notes match.</string>
+    <string name="gallery_photo_labelled">Wine note: %1$s</string>
+    <string name="gallery_photo_unlabelled">Wine note</string>
 
     <string name="chat_greeting">Hello! Ask me anything about wine.</string>
     <string name="chat_input_hint">Ask about a wine</string>
