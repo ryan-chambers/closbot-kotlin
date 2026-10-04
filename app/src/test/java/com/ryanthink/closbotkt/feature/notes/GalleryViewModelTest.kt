@@ -4,7 +4,9 @@ import app.cash.turbine.test
 import com.ryanthink.closbotkt.MainDispatcherRule
 import com.ryanthink.closbotkt.data.notes.FakeWineNoteRepository
 import com.ryanthink.closbotkt.data.notes.NewWineNote
+import com.ryanthink.closbotkt.data.notes.PhotoStorage
 import com.ryanthink.closbotkt.data.notes.WineNote
+import java.io.File
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -18,7 +20,7 @@ class GalleryViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val repository = FakeWineNoteRepository()
-    private val viewModel = GalleryViewModel(repository)
+    private val viewModel = GalleryViewModel(repository, PhotoStorage(File("photos")))
 
     private suspend fun save(photo: String, vararg labels: String) =
         repository.addNote(NewWineNote(photo, details = "", labels = labels.toList()))
@@ -159,5 +161,14 @@ class GalleryViewModelTest {
             assertTrue(state.notes.isEmpty())
             assertTrue(state.hasAnyNotes)
         }
+    }
+
+    @Test
+    fun `a note's photo is found by its file name in the photo directory`() = runTest {
+        val id = save("a.jpg")
+
+        val note = requireNotNull(repository.getNote(id))
+
+        assertEquals(File("photos", "a.jpg"), viewModel.photoFile(note))
     }
 }
