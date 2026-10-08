@@ -59,7 +59,9 @@ fun ClosBotApp(navController: NavHostController = rememberNavController()) {
             modifier = Modifier.padding(innerPadding).consumeWindowInsets(innerPadding),
         ) {
             composable<ChatRoute> { ChatScreen() }
-            composable<AddNoteRoute> { AddNoteScreen() }
+            composable<AddNoteRoute> {
+                AddNoteScreen(onSaved = { navController.navigateToTopLevel(TopLevelDestination.Gallery) })
+            }
             composable<GalleryRoute> {
                 GalleryScreen(onNoteClick = { navController.navigate(EditNoteRoute(it)) })
             }

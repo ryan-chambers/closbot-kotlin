@@ -159,9 +159,10 @@ shape as phase 2: storage, then repository, then ViewModel, then screen.
 | 2 | `feature/note-repository` | `WineNoteRepository` interface wrapping the DAO (real) + fake, entity↔domain mapping. | Repository pattern over Room, `Flow` |
 | 3 | `feature/gallery-viewmodel` | `GalleryUiState`/`GalleryViewModel`: notes list, search/tag filter, from the repository. Turbine-tested. | `StateFlow`, combining flows |
 | 4 | `feature/gallery-screen` | `LazyVerticalGrid` driven by the ViewModel, Coil for photo thumbnails. | Grid layout, Coil, nav to edit-note |
-| 5 | `feature/add-note` | Add-note form + photo capture (Photo Picker / `TakePicture` contract), saves via repository. Note text is a plain field for now; AI label pre-fill comes in phase 4. | Activity-result contracts, form state |
-| 6 | `feature/edit-note` | Edit/detail screen reached by id (`edit-note/{id}`), update/delete. | Nav arguments, editing an existing entity |
-| 7 | `feature/photo-import` | One-time `adb run-as` pull of old app's photos and `CapacitorStorage.xml` notes, imported into Room. | Data migration, not much new Android concept — mostly a script/tool |
+| 5 | `feature/add-note` | Add-note form + Photo Picker, saves via repository. Note text and labels are plain fields for now; AI label pre-fill comes in phase 4. | Activity-result contracts, form state, copying a content URI into app storage |
+| 6 | `feature/camera-capture` | Take a photo from the add-note form (`TakePicture` contract, `FileProvider`). | Camera intent, `FileProvider`, temporary URI grants |
+| 7 | `feature/edit-note` | Edit/detail screen reached by id (`edit-note/{id}`), update/delete. | Nav arguments, editing an existing entity |
+| 8 | `feature/photo-import` | One-time `adb run-as` pull of old app's photos and `CapacitorStorage.xml` notes, imported into Room. | Data migration, not much new Android concept — mostly a script/tool |
 
 **Later phases.** These get broken into small branches like phases 2 and 3 when we reach them.
 
