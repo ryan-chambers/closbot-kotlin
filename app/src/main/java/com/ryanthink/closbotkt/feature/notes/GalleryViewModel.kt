@@ -2,9 +2,11 @@ package com.ryanthink.closbotkt.feature.notes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ryanthink.closbotkt.data.notes.PhotoStorage
 import com.ryanthink.closbotkt.data.notes.WineNote
 import com.ryanthink.closbotkt.data.notes.WineNoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.io.File
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,6 +25,7 @@ import kotlinx.coroutines.flow.update
 @HiltViewModel
 class GalleryViewModel @Inject constructor(
     repository: WineNoteRepository,
+    private val photoStorage: PhotoStorage,
 ) : ViewModel() {
 
     private val searchTerm = MutableStateFlow("")
@@ -37,6 +40,9 @@ class GalleryViewModel @Inject constructor(
                 started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS),
                 initialValue = GalleryUiState(),
             )
+
+    /** The image file for [note]'s photo, for the grid to load. */
+    fun photoFile(note: WineNote): File = photoStorage.fileFor(note.photoFileName)
 
     fun onSearchTermChange(term: String) {
         searchTerm.value = term

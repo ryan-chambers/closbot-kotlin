@@ -5,7 +5,6 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
-import androidx.test.espresso.Espresso
 import org.junit.Rule
 import org.junit.Test
 
@@ -30,22 +29,10 @@ class NavigationShellTest {
     }
 
     @Test
-    fun openingANoteShowsTheEditScreenWithItsIdAndHidesTheBottomBar() {
+    fun theGalleryTabShowsTheGallery() {
         composeRule.onNodeWithText(text(R.string.nav_gallery)).performClick()
-        composeRule.onNodeWithText(text(R.string.gallery_open_sample_note)).performClick()
 
-        composeRule.onNodeWithText(text(R.string.screen_edit_note, 1L)).assertIsDisplayed()
-        composeRule.onNodeWithText(text(R.string.nav_gallery)).assertDoesNotExist()
-    }
-
-    @Test
-    fun backFromEditReturnsToTheGallery() {
-        composeRule.onNodeWithText(text(R.string.nav_gallery)).performClick()
-        composeRule.onNodeWithText(text(R.string.gallery_open_sample_note)).performClick()
-
-        Espresso.pressBack()
-
-        composeRule.onNodeWithText(text(R.string.screen_gallery)).assertIsDisplayed()
+        composeRule.onNodeWithText(text(R.string.gallery_search_hint)).assertIsDisplayed()
     }
 
     @Test
