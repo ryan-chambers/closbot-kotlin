@@ -1,6 +1,7 @@
 package com.ryanthink.closbotkt.data.notes
 
 import android.content.Context
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,12 +16,17 @@ import javax.inject.Singleton
  */
 @Module
 @InstallIn(SingletonComponent::class)
-object PhotoStorageModule {
+abstract class PhotoStorageModule {
 
-    private const val PHOTOS_DIRECTORY = "photos"
+    @Binds
+    abstract fun bindPhotoImporter(impl: ContentResolverPhotoImporter): PhotoImporter
 
-    @Provides
-    @Singleton
-    fun providePhotoStorage(@ApplicationContext context: Context): PhotoStorage =
-        PhotoStorage(File(context.filesDir, PHOTOS_DIRECTORY))
+    companion object {
+        private const val PHOTOS_DIRECTORY = "photos"
+
+        @Provides
+        @Singleton
+        fun providePhotoStorage(@ApplicationContext context: Context): PhotoStorage =
+            PhotoStorage(File(context.filesDir, PHOTOS_DIRECTORY))
+    }
 }

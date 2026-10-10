@@ -29,6 +29,13 @@ class NavigationShellTest {
     }
 
     @Test
+    fun theAddNoteTabShowsTheForm() {
+        composeRule.onNodeWithText(text(R.string.nav_add_note)).performClick()
+
+        composeRule.onNodeWithText(text(R.string.add_note_save)).assertIsDisplayed()
+    }
+
+    @Test
     fun theGalleryTabShowsTheGallery() {
         composeRule.onNodeWithText(text(R.string.nav_gallery)).performClick()
 
