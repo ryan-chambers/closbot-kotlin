@@ -19,8 +19,9 @@ class PhotoStorage(private val directory: File) {
      *
      * The name has no extension: the app never trusts it to say what the bytes are, and the image
      * loader works that out from the content.
+     *
+     * @throws IOException if [source] can't be read or the photo can't be written
      */
-    @Throws(IOException::class)
     fun copyIn(source: InputStream): String {
         directory.mkdirs()
         val fileName = UUID.randomUUID().toString()

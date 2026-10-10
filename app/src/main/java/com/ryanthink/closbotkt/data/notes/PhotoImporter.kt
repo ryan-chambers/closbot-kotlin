@@ -13,6 +13,5 @@ interface PhotoImporter {
      *
      * @throws IOException if the photo can't be read or written
      */
-    @Throws(IOException::class)
     suspend fun importPhoto(source: String): String
 }
