@@ -10,6 +10,7 @@
     <string name="screen_vintage">Vintage screen</string>
 
     <string name="add_note_choose_photo">Choose photo</string>
+    <string name="add_note_take_photo">Take photo</string>
     <string name="add_note_change_photo">Change photo</string>
     <string name="add_note_photo_preview">Selected photo</string>
     <string name="add_note_details">Notes</string>

@@ -1,6 +1,8 @@
 package com.ryanthink.closbotkt.feature.notes
 
+import androidx.lifecycle.SavedStateHandle
 import com.ryanthink.closbotkt.MainDispatcherRule
+import com.ryanthink.closbotkt.data.notes.FakeCameraPhotoFiles
 import com.ryanthink.closbotkt.data.notes.FakePhotoImporter
 import com.ryanthink.closbotkt.data.notes.FakeWineNoteRepository
 import java.io.IOException
@@ -20,7 +22,9 @@ class AddNoteViewModelTest {
 
     private val repository = FakeWineNoteRepository()
     private val importer = FakePhotoImporter()
-    private val viewModel = AddNoteViewModel(repository, importer)
+    private val cameraFiles = FakeCameraPhotoFiles()
+    private val savedStateHandle = SavedStateHandle()
+    private val viewModel = AddNoteViewModel(repository, importer, cameraFiles, savedStateHandle)
 
     private suspend fun savedNotes() = repository.observeNotes().first()
 
@@ -122,5 +126,103 @@ class AddNoteViewModelTest {
 
         assertEquals(1, savedNotes().size)
         assertEquals(listOf("content://photo/1"), importer.imported)
+    }
+
+    @Test
+    fun `a taken photo becomes the chosen photo`() {
+        val target = viewModel.onTakePhotoRequested()
+
+        viewModel.onPhotoTaken(taken = true)
+
+        assertEquals(listOf(target), cameraFiles.created)
+        assertEquals(target, viewModel.uiState.value.photoSource)
+        assertTrue(viewModel.uiState.value.canSave)
+    }
+
+    @Test
+    fun `backing out of the camera discards the target and keeps the form`() {
+        viewModel.onPhotoPicked("content://photo/1")
+        val target = viewModel.onTakePhotoRequested()
+
+        viewModel.onPhotoTaken(taken = false)
+
+        assertEquals(listOf(target), cameraFiles.discarded)
+        assertEquals("content://photo/1", viewModel.uiState.value.photoSource)
+    }
+
+    @Test
+    fun `a camera result with no pending request is ignored`() {
+        viewModel.onPhotoTaken(taken = true)
+
+        assertEquals(AddNoteUiState(), viewModel.uiState.value)
+        assertTrue(cameraFiles.discarded.isEmpty())
+    }
+
+    @Test
+    fun `a camera result is only used once`() {
+        viewModel.onTakePhotoRequested()
+        viewModel.onPhotoTaken(taken = true)
+        viewModel.onPhotoPicked("content://photo/1")
+
+        viewModel.onPhotoTaken(taken = true)
+
+        assertEquals("content://photo/1", viewModel.uiState.value.photoSource)
+    }
+
+    @Test
+    fun `asking for the camera again discards the unanswered target`() {
+        val first = viewModel.onTakePhotoRequested()
+
+        viewModel.onTakePhotoRequested()
+
+        assertEquals(listOf(first), cameraFiles.discarded)
+    }
+
+    @Test
+    fun `replacing the photo discards the one it replaces`() {
+        viewModel.onPhotoPicked("content://photo/1")
+
+        viewModel.onPhotoPicked("content://photo/2")
+
+        assertEquals(listOf("content://photo/1"), cameraFiles.discarded)
+    }
+
+    @Test
+    fun `choosing the same photo again discards nothing`() {
+        viewModel.onPhotoPicked("content://photo/1")
+
+        viewModel.onPhotoPicked("content://photo/1")
+
+        assertTrue(cameraFiles.discarded.isEmpty())
+    }
+
+    @Test
+    fun `saving discards the capture once the note has its own copy`() = runTest {
+        viewModel.onPhotoPicked("content://photo/1")
+
+        viewModel.onSave()
+
+        assertEquals(listOf("content://photo/1"), cameraFiles.discarded)
+    }
+
+    @Test
+    fun `a failed save keeps the capture so the user can retry`() = runTest {
+        viewModel.onPhotoPicked("content://photo/1")
+        importer.failure = IOException("no space")
+
+        viewModel.onSave()
+
+        assertTrue(cameraFiles.discarded.isEmpty())
+    }
+
+    @Test
+    fun `the pending camera request survives the process being recreated`() {
+        val target = viewModel.onTakePhotoRequested()
+
+        // A new ViewModel over the same saved state is what Android builds after killing the process.
+        val restored = AddNoteViewModel(repository, importer, cameraFiles, savedStateHandle)
+        restored.onPhotoTaken(taken = true)
+
+        assertEquals(target, restored.uiState.value.photoSource)
     }
 }
