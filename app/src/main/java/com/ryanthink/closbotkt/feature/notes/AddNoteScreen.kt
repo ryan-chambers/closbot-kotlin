@@ -2,8 +2,8 @@ package com.ryanthink.closbotkt.feature.notes
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import androidx.activity.result.contract.ActivityResultContracts.TakePicture
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,7 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -51,7 +50,8 @@ fun AddNoteScreen(
         if (uri != null) viewModel.onPhotoPicked(uri.toString())
     }
 
-    val camera = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { taken ->
+    // The camera app writes the photo to the URI we give it and answers only whether it did.
+    val camera = rememberLauncherForActivityResult(TakePicture()) { taken ->
         viewModel.onPhotoTaken(taken)
     }
 
@@ -65,7 +65,7 @@ fun AddNoteScreen(
     AddNoteContent(
         state = state,
         onPickPhoto = { photoPicker.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly)) },
-        onTakePhoto = { camera.launch(viewModel.onTakePhotoRequested().toUri())},
+        onTakePhoto = { camera.launch(viewModel.onTakePhotoRequested().toUri()) },
         onDetailsChange = viewModel::onDetailsChange,
         onLabelsChange = viewModel::onLabelsChange,
         onSave = viewModel::onSave,
@@ -105,11 +105,8 @@ fun AddNoteContent(
             )
         }
 
-        Row(
-        ) {
-            OutlinedButton(onClick = onPickPhoto,
-                modifier = Modifier.weight(1f),
-            ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedButton(onClick = onPickPhoto, modifier = Modifier.weight(1f)) {
                 val label = if (state.photoSource == null) {
                     R.string.add_note_choose_photo
                 } else {
@@ -117,9 +114,7 @@ fun AddNoteContent(
                 }
                 Text(stringResource(label))
             }
-            OutlinedButton(onTakePhoto,
-                modifier = Modifier.weight(1f),
-            ) {
+            OutlinedButton(onClick = onTakePhoto, modifier = Modifier.weight(1f)) {
                 Text(stringResource(R.string.add_note_take_photo))
             }
         }

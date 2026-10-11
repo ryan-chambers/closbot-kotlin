@@ -26,6 +26,7 @@ class AddNoteContentTest {
     val composeRule = createComposeRule()
 
     private var pickRequests = 0
+    private var cameraRequests = 0
     private var saveRequests = 0
     private val details = mutableListOf<String>()
     private val labels = mutableListOf<String>()
@@ -40,6 +41,7 @@ class AddNoteContentTest {
                 AddNoteContent(
                     state = state,
                     onPickPhoto = { pickRequests++ },
+                    onTakePhoto = { cameraRequests++ },
                     onDetailsChange = {
                         details += it
                         state = state.copy(details = it)
@@ -68,6 +70,16 @@ class AddNoteContentTest {
         composeRule.onNodeWithText(text(R.string.add_note_choose_photo)).performClick()
 
         assertEquals(1, pickRequests)
+    }
+
+    @Test
+    fun takingAPhotoIsOfferedAndReported() {
+        setContent(AddNoteUiState())
+
+        composeRule.onNodeWithText(text(R.string.add_note_take_photo)).performClick()
+
+        assertEquals(1, cameraRequests)
+        assertEquals(0, pickRequests)
     }
 
     @Test
