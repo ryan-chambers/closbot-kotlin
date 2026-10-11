@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The folders FileProvider may share by content:// URI. Anything not listed here stays private. -->
+<paths>
+    <!-- Cache subfolder the camera app writes captures into; see FileProviderCameraPhotoFiles. -->
+    <cache-path
+        name="camera"
+        path="camera/" />
+</paths>
