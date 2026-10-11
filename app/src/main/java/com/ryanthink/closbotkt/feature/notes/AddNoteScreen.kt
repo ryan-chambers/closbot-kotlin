@@ -2,9 +2,11 @@ package com.ryanthink.closbotkt.feature.notes
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
@@ -19,11 +21,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
@@ -47,6 +51,10 @@ fun AddNoteScreen(
         if (uri != null) viewModel.onPhotoPicked(uri.toString())
     }
 
+    val camera = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { taken ->
+        viewModel.onPhotoTaken(taken)
+    }
+
     LaunchedEffect(state.isSaved) {
         if (state.isSaved) {
             onSaved()
@@ -57,6 +65,7 @@ fun AddNoteScreen(
     AddNoteContent(
         state = state,
         onPickPhoto = { photoPicker.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly)) },
+        onTakePhoto = { camera.launch(viewModel.onTakePhotoRequested().toUri())},
         onDetailsChange = viewModel::onDetailsChange,
         onLabelsChange = viewModel::onLabelsChange,
         onSave = viewModel::onSave,
@@ -69,6 +78,7 @@ fun AddNoteScreen(
 fun AddNoteContent(
     state: AddNoteUiState,
     onPickPhoto: () -> Unit,
+    onTakePhoto: () -> Unit,
     onDetailsChange: (String) -> Unit,
     onLabelsChange: (String) -> Unit,
     onSave: () -> Unit,
@@ -94,13 +104,24 @@ fun AddNoteContent(
                 contentScale = ContentScale.Crop,
             )
         }
-        OutlinedButton(onClick = onPickPhoto, modifier = Modifier.fillMaxWidth()) {
-            val label = if (state.photoSource == null) {
-                R.string.add_note_choose_photo
-            } else {
-                R.string.add_note_change_photo
+
+        Row(
+        ) {
+            OutlinedButton(onClick = onPickPhoto,
+                modifier = Modifier.weight(1f),
+            ) {
+                val label = if (state.photoSource == null) {
+                    R.string.add_note_choose_photo
+                } else {
+                    R.string.add_note_change_photo
+                }
+                Text(stringResource(label))
             }
-            Text(stringResource(label))
+            OutlinedButton(onTakePhoto,
+                modifier = Modifier.weight(1f),
+            ) {
+                Text(stringResource(R.string.add_note_take_photo))
+            }
         }
 
         OutlinedTextField(
