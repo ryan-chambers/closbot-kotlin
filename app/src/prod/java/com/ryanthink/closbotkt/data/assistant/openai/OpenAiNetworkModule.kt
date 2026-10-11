@@ -22,9 +22,8 @@ object OpenAiNetworkModule {
     @Provides
     @Singleton
     fun provideOpenAiApi(): OpenAiApi {
-        val client = OkHttpClient.Builder()
-            .addInterceptor(OpenAiAuthInterceptor(apiKey = BuildConfig.OPENAI_API_KEY))
-            .build()
+        val client =
+            OkHttpClient.Builder().addInterceptor(OpenAiAuthInterceptor(apiKey = BuildConfig.OPENAI_API_KEY)).build()
         val json = Json { ignoreUnknownKeys = true }
         return Retrofit.Builder()
             .baseUrl(BASE_URL)

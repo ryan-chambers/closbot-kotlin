@@ -17,8 +17,7 @@ import org.junit.Test
 
 class AddNoteViewModelTest {
 
-    @get:Rule
-    val mainDispatcherRule = MainDispatcherRule()
+    @get:Rule val mainDispatcherRule = MainDispatcherRule()
 
     private val repository = FakeWineNoteRepository()
     private val importer = FakePhotoImporter()

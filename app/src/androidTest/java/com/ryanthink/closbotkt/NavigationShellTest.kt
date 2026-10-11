@@ -10,16 +10,16 @@ import org.junit.Test
 
 class NavigationShellTest {
 
-    @get:Rule
-    val composeRule = createAndroidComposeRule<MainActivity>()
+    @get:Rule val composeRule = createAndroidComposeRule<MainActivity>()
 
     private fun text(id: Int, vararg args: Any) = composeRule.activity.getString(id, *args)
 
     @Test
     fun startsOnChatWithAllTabsVisible() {
         composeRule.onNodeWithText(text(R.string.chat_greeting)).assertIsDisplayed()
-        listOf(R.string.nav_chat, R.string.nav_add_note, R.string.nav_gallery, R.string.nav_vintage)
-            .forEach { composeRule.onNodeWithText(text(it)).assertIsDisplayed() }
+        listOf(R.string.nav_chat, R.string.nav_add_note, R.string.nav_gallery, R.string.nav_vintage).forEach {
+            composeRule.onNodeWithText(text(it)).assertIsDisplayed()
+        }
     }
 
     @Test

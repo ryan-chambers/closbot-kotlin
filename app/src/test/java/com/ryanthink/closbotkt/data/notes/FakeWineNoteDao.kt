@@ -10,8 +10,9 @@ class FakeWineNoteDao : WineNoteDao {
     private val rows = MutableStateFlow<List<WineNoteEntity>>(emptyList())
     private var nextId = 1L
 
-    override fun observeAll(): Flow<List<WineNoteEntity>> =
-        rows.map { list -> list.sortedByDescending { it.createdAt } }
+    override fun observeAll(): Flow<List<WineNoteEntity>> = rows.map { list ->
+        list.sortedByDescending { it.createdAt }
+    }
 
     override suspend fun getById(id: Long): WineNoteEntity? = rows.value.find { it.id == id }
 

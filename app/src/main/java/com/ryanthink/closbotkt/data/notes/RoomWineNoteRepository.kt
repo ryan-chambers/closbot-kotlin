@@ -5,7 +5,9 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class RoomWineNoteRepository @Inject constructor(
+class RoomWineNoteRepository
+@Inject
+constructor(
     private val dao: WineNoteDao,
     private val clock: Clock,
 ) : WineNoteRepository {
@@ -15,8 +17,7 @@ class RoomWineNoteRepository @Inject constructor(
 
     override suspend fun getNote(id: Long): WineNote? = dao.getById(id)?.toDomain()
 
-    override suspend fun addNote(note: NewWineNote): Long =
-        dao.insert(note.toEntity(createdAt = clock.instant()))
+    override suspend fun addNote(note: NewWineNote): Long = dao.insert(note.toEntity(createdAt = clock.instant()))
 
     override suspend fun updateNote(note: WineNote) = dao.update(note.toEntity())
 

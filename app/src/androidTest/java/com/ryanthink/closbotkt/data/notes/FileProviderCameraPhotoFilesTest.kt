@@ -8,8 +8,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * Runs on a device because it goes through the real [androidx.core.content.FileProvider] declared
- * in the manifest. These tests fail until that provider and `res/xml/file_paths.xml` exist.
+ * Runs on a device because it goes through the real [androidx.core.content.FileProvider] declared in the manifest.
+ * These tests fail until that provider and `res/xml/file_paths.xml` exist.
  */
 class FileProviderCameraPhotoFilesTest {
 
@@ -46,8 +46,7 @@ class FileProviderCameraPhotoFilesTest {
 
         cameraFiles.discard(target)
 
-        val failure = runCatching { contentResolver.openInputStream(Uri.parse(target))!!.close() }
-            .exceptionOrNull()
+        val failure = runCatching { contentResolver.openInputStream(Uri.parse(target))!!.close() }.exceptionOrNull()
         assertTrue(failure is FileNotFoundException)
     }
 

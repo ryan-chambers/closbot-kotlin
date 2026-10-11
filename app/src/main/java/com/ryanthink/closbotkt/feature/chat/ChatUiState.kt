@@ -1,6 +1,9 @@
 package com.ryanthink.closbotkt.feature.chat
 
-enum class ChatSender { USER, ASSISTANT }
+enum class ChatSender {
+    USER,
+    ASSISTANT,
+}
 
 data class ChatMessage(val text: String, val sender: ChatSender)
 

@@ -22,8 +22,7 @@ import org.junit.Test
 
 class AddNoteContentTest {
 
-    @get:Rule
-    val composeRule = createComposeRule()
+    @get:Rule val composeRule = createComposeRule()
 
     private var pickRequests = 0
     private var cameraRequests = 0

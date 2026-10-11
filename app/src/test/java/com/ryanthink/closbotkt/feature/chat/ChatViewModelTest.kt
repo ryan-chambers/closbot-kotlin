@@ -14,8 +14,7 @@ import org.junit.Test
 
 class ChatViewModelTest {
 
-    @get:Rule
-    val mainDispatcherRule = MainDispatcherRule()
+    @get:Rule val mainDispatcherRule = MainDispatcherRule()
 
     private class ControlledRepository : WineAssistantRepository {
         var replies = Channel<String>(Channel.UNLIMITED)

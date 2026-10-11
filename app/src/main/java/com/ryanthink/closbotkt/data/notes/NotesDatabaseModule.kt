@@ -21,6 +21,5 @@ object NotesDatabaseModule {
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase =
         Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME).build()
 
-    @Provides
-    fun provideWineNoteDao(database: AppDatabase): WineNoteDao = database.wineNoteDao()
+    @Provides fun provideWineNoteDao(database: AppDatabase): WineNoteDao = database.wineNoteDao()
 }

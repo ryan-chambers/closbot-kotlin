@@ -18,12 +18,14 @@ import kotlinx.coroutines.flow.update
 /**
  * Turns the saved notes plus the user's filter choices into a [GalleryUiState].
  *
- * The notes come from [WineNoteRepository.observeNotes] and the filter inputs are two small
- * [MutableStateFlow]s; [combine] re-runs the filtering whenever any of the three changes, so the
- * grid updates whether a note is added or the user types in the search box.
+ * The notes come from [WineNoteRepository.observeNotes] and the filter inputs are two small [MutableStateFlow]s;
+ * [combine] re-runs the filtering whenever any of the three changes, so the grid updates whether a note is added or the
+ * user types in the search box.
  */
 @HiltViewModel
-class GalleryViewModel @Inject constructor(
+class GalleryViewModel
+@Inject
+constructor(
     repository: WineNoteRepository,
     private val photoStorage: PhotoStorage,
 ) : ViewModel() {
@@ -66,9 +68,10 @@ private fun buildState(notes: List<WineNote>, term: String, requestedTag: String
     val tag = requestedTag?.takeIf { it in allLabels }
     val needle = term.trim()
 
-    val visible = notes
-        .filter { tag == null || tag in it.labels }
-        .filter { note -> needle.isEmpty() || note.labels.any { it.contains(needle, ignoreCase = true) } }
+    val visible =
+        notes
+            .filter { tag == null || tag in it.labels }
+            .filter { note -> needle.isEmpty() || note.labels.any { it.contains(needle, ignoreCase = true) } }
 
     return GalleryUiState(
         isLoading = false,
@@ -76,11 +79,12 @@ private fun buildState(notes: List<WineNote>, term: String, requestedTag: String
         hasAnyNotes = notes.isNotEmpty(),
         searchTerm = term,
         selectedTag = tag,
-        matchingLabels = if (needle.isEmpty() || tag != null) {
-            emptyList()
-        } else {
-            // Only the suggestions are shown in order, so that's the only place that sorts.
-            allLabels.filter { it.contains(needle, ignoreCase = true) }.sorted()
-        },
+        matchingLabels =
+            if (needle.isEmpty() || tag != null) {
+                emptyList()
+            } else {
+                // Only the suggestions are shown in order, so that's the only place that sorts.
+                allLabels.filter { it.contains(needle, ignoreCase = true) }.sorted()
+            },
     )
 }

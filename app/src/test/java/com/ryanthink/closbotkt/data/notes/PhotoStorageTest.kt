@@ -14,8 +14,7 @@ import org.junit.rules.TemporaryFolder
 
 class PhotoStorageTest {
 
-    @get:Rule
-    val temporaryFolder = TemporaryFolder()
+    @get:Rule val temporaryFolder = TemporaryFolder()
 
     // A folder that doesn't exist yet, like the photo directory on first use.
     private val directory by lazy { File(temporaryFolder.root, "photos") }
@@ -43,9 +42,10 @@ class PhotoStorageTest {
 
     @Test
     fun `a copy that fails leaves no partial file and passes the error on`() {
-        val failing = object : InputStream() {
-            override fun read(): Int = throw IOException("disk on fire")
-        }
+        val failing =
+            object : InputStream() {
+                override fun read(): Int = throw IOException("disk on fire")
+            }
 
         try {
             storage.copyIn(failing)
@@ -59,10 +59,14 @@ class PhotoStorageTest {
     @Test
     fun `copyIn closes the source`() {
         var closed = false
-        val source = object : InputStream() {
-            override fun read(): Int = -1
-            override fun close() { closed = true }
-        }
+        val source =
+            object : InputStream() {
+                override fun read(): Int = -1
+
+                override fun close() {
+                    closed = true
+                }
+            }
 
         storage.copyIn(source)
 

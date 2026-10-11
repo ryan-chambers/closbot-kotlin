@@ -12,10 +12,11 @@ import org.junit.Test
 class RoomWineNoteRepositoryTest {
 
     private val now = Instant.parse("2026-03-01T12:00:00Z")
-    private val repository = RoomWineNoteRepository(
-        dao = FakeWineNoteDao(),
-        clock = Clock.fixed(now, ZoneOffset.UTC),
-    )
+    private val repository =
+        RoomWineNoteRepository(
+            dao = FakeWineNoteDao(),
+            clock = Clock.fixed(now, ZoneOffset.UTC),
+        )
 
     @Test
     fun `addNote stamps the creation time and returns the assigned id`() = runTest {

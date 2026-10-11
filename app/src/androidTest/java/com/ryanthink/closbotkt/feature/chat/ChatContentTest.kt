@@ -16,8 +16,7 @@ import org.junit.Test
 
 class ChatContentTest {
 
-    @get:Rule
-    val composeRule = createComposeRule()
+    @get:Rule val composeRule = createComposeRule()
 
     private val sent = mutableListOf<String>()
 
@@ -40,11 +39,12 @@ class ChatContentTest {
     fun showsBothSidesOfTheConversation() {
         setContent(
             ChatUiState(
-                messages = listOf(
-                    ChatMessage("What pairs with duck?", ChatSender.USER),
-                    ChatMessage("Try a Pinot Noir.", ChatSender.ASSISTANT),
-                ),
-            ),
+                messages =
+                    listOf(
+                        ChatMessage("What pairs with duck?", ChatSender.USER),
+                        ChatMessage("Try a Pinot Noir.", ChatSender.ASSISTANT),
+                    )
+            )
         )
 
         composeRule.onNodeWithText("What pairs with duck?").assertIsDisplayed()

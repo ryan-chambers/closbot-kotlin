@@ -13,9 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class ChatViewModel @Inject constructor(
-    private val repository: WineAssistantRepository,
-) : ViewModel() {
+class ChatViewModel @Inject constructor(private val repository: WineAssistantRepository) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ChatUiState())
     val uiState: StateFlow<ChatUiState> = _uiState.asStateFlow()
@@ -34,7 +32,8 @@ class ChatViewModel @Inject constructor(
 
         viewModelScope.launch {
             var replyStarted = false
-            repository.invokeChat(message)
+            repository
+                .invokeChat(message)
                 .catch { _uiState.update { state -> state.copy(isWaiting = false, hasError = true) } }
                 .collect { reply ->
                     _uiState.update { it.withAssistantReply(reply, replace = replyStarted) }
