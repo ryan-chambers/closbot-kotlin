@@ -21,6 +21,9 @@ abstract class PhotoStorageModule {
     @Binds
     abstract fun bindPhotoImporter(impl: ContentResolverPhotoImporter): PhotoImporter
 
+    @Binds
+    abstract fun bindCameraPhotoFiles(impl: FileProviderCameraPhotoFiles): CameraPhotoFiles
+
     companion object {
         private const val PHOTOS_DIRECTORY = "photos"
 
