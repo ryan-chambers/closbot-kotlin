@@ -73,4 +73,36 @@ class PhotoStorageTest {
         assertTrue(closed)
         assertFalse(directory.listFiles().orEmpty().isEmpty())
     }
+
+    @Test
+    fun `delete removes stored file`() {
+        val createdFile = storage.copyIn(byteArrayOf(1).inputStream())
+
+        storage.delete(createdFile)
+
+        assertTrue(directory.listFiles().orEmpty().isEmpty())
+    }
+
+    @Test
+    fun `delete only removes file specified`() {
+        val file1 = storage.copyIn(byteArrayOf(1).inputStream())
+        val file2 = storage.copyIn(byteArrayOf(1).inputStream())
+
+        storage.delete(file1)
+
+        assertEquals(1, directory.listFiles().orEmpty().size)
+        val remainingFiles = directory.listFiles().orEmpty()
+        assertFalse(remainingFiles.isEmpty())
+        assertTrue(remainingFiles.get(0).name.contains(file2))
+    }
+
+    @Test
+    fun `deleting file that does not exist throws exception`() {
+        try {
+            storage.delete("oops")
+            fail("expected an IOException")
+        } catch (e: IOException) {
+            assertEquals("Delete failed", e.message)
+        }
+    }
 }
