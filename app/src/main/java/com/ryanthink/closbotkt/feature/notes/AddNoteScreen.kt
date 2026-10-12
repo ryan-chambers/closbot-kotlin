@@ -33,8 +33,8 @@ import coil3.compose.AsyncImage
 import com.ryanthink.closbotkt.R
 
 /**
- * Stateful entry point: connects [AddNoteContent] to its [AddNoteViewModel] and to the Photo
- * Picker. [onSaved] is called once after a note is saved, so the caller decides where to go next.
+ * Stateful entry point: connects [AddNoteContent] to its [AddNoteViewModel] and to the Photo Picker. [onSaved] is
+ * called once after a note is saved, so the caller decides where to go next.
  */
 @Composable
 fun AddNoteScreen(
@@ -46,14 +46,16 @@ fun AddNoteScreen(
 
     // The system Photo Picker: no permission needed, because the user hands the app just the photo
     // they choose. The launcher returns null if they back out without choosing.
-    val photoPicker = rememberLauncherForActivityResult(PickVisualMedia()) { uri ->
-        if (uri != null) viewModel.onPhotoPicked(uri.toString())
-    }
+    val photoPicker =
+        rememberLauncherForActivityResult(PickVisualMedia()) { uri ->
+            if (uri != null) viewModel.onPhotoPicked(uri.toString())
+        }
 
     // The camera app writes the photo to the URI we give it and answers only whether it did.
-    val camera = rememberLauncherForActivityResult(TakePicture()) { taken ->
-        viewModel.onPhotoTaken(taken)
-    }
+    val camera =
+        rememberLauncherForActivityResult(TakePicture()) { taken ->
+            viewModel.onPhotoTaken(taken)
+        }
 
     LaunchedEffect(state.isSaved) {
         if (state.isSaved) {
@@ -87,31 +89,26 @@ fun AddNoteContent(
     // Scrolls so the form stays reachable in landscape and with the keyboard open; imePadding lifts
     // it above the keyboard, which edge-to-edge no longer does for us.
     Column(
-        modifier = modifier
-            .imePadding()
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
+        modifier = modifier.imePadding().verticalScroll(rememberScrollState()).padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         state.photoSource?.let { photo ->
             AsyncImage(
                 model = photo,
                 contentDescription = stringResource(R.string.add_note_photo_preview),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(4f / 3f)
-                    .clip(MaterialTheme.shapes.medium),
+                modifier = Modifier.fillMaxWidth().aspectRatio(4f / 3f).clip(MaterialTheme.shapes.medium),
                 contentScale = ContentScale.Crop,
             )
         }
 
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedButton(onClick = onPickPhoto, modifier = Modifier.weight(1f)) {
-                val label = if (state.photoSource == null) {
-                    R.string.add_note_choose_photo
-                } else {
-                    R.string.add_note_change_photo
-                }
+                val label =
+                    if (state.photoSource == null) {
+                        R.string.add_note_choose_photo
+                    } else {
+                        R.string.add_note_change_photo
+                    }
                 Text(stringResource(label))
             }
             OutlinedButton(onClick = onTakePhoto, modifier = Modifier.weight(1f)) {

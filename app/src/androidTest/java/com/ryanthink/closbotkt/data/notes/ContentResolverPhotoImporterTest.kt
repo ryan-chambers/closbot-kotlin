@@ -14,8 +14,7 @@ import org.junit.rules.TemporaryFolder
 /** Runs on a device because it needs a real [android.content.ContentResolver]. */
 class ContentResolverPhotoImporterTest {
 
-    @get:Rule
-    val temporaryFolder = TemporaryFolder()
+    @get:Rule val temporaryFolder = TemporaryFolder()
 
     private val storage by lazy { PhotoStorage(File(temporaryFolder.root, "photos")) }
     private val importer by lazy {

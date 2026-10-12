@@ -14,9 +14,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Runs against a real, in-memory SQLite database (via [Room.inMemoryDatabaseBuilder]) rather than
- * a fake DAO, since the thing worth verifying here is that Room's generated SQL and the
- * [Converters] round-trip correctly — a fake couldn't catch a mistake in either.
+ * Runs against a real, in-memory SQLite database (via [Room.inMemoryDatabaseBuilder]) rather than a fake DAO, since the
+ * thing worth verifying here is that Room's generated SQL and the [Converters] round-trip correctly — a fake couldn't
+ * catch a mistake in either.
  */
 @RunWith(AndroidJUnit4::class)
 class WineNoteDaoTest {
@@ -26,10 +26,12 @@ class WineNoteDaoTest {
 
     @Before
     fun createDatabase() {
-        database = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext(),
-            AppDatabase::class.java,
-        ).build()
+        database =
+            Room.inMemoryDatabaseBuilder(
+                    ApplicationProvider.getApplicationContext(),
+                    AppDatabase::class.java,
+                )
+                .build()
         dao = database.wineNoteDao()
     }
 
@@ -73,10 +75,11 @@ class WineNoteDaoTest {
     private fun sampleNote(
         details: String = "Domaine Leflaive, Puligny-Montrachet",
         createdAt: Instant = Instant.parse("2026-01-01T00:00:00Z"),
-    ) = WineNoteEntity(
-        photoFileName = "bottle.jpg",
-        details = details,
-        labels = listOf("white", "burgundy"),
-        createdAt = createdAt,
-    )
+    ) =
+        WineNoteEntity(
+            photoFileName = "bottle.jpg",
+            details = details,
+            labels = listOf("white", "burgundy"),
+            createdAt = createdAt,
+        )
 }

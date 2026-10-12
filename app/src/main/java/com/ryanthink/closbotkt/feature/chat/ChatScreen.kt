@@ -113,11 +113,12 @@ private fun MessageBubble(text: String, sender: ChatSender) {
     ) {
         Surface(
             shape = MaterialTheme.shapes.medium,
-            color = if (isUser) {
-                MaterialTheme.colorScheme.primaryContainer
-            } else {
-                MaterialTheme.colorScheme.surfaceVariant
-            },
+            color =
+                if (isUser) {
+                    MaterialTheme.colorScheme.primaryContainer
+                } else {
+                    MaterialTheme.colorScheme.surfaceVariant
+                },
             modifier = Modifier.widthIn(max = 320.dp),
         ) {
             Text(text = text, modifier = Modifier.padding(12.dp))

@@ -18,8 +18,7 @@ import org.junit.Test
 
 class GalleryContentTest {
 
-    @get:Rule
-    val composeRule = createComposeRule()
+    @get:Rule val composeRule = createComposeRule()
 
     private val opened = mutableListOf<Long>()
     private val searched = mutableListOf<String>()
@@ -66,14 +65,13 @@ class GalleryContentTest {
                 isLoading = false,
                 hasAnyNotes = true,
                 notes = listOf(note(1, "Chablis"), note(2, "Barolo", "Nebbiolo")),
-            ),
+            )
         )
 
-        composeRule.onNodeWithContentDescription(text(R.string.gallery_photo_labelled, "Chablis"))
-            .assertIsDisplayed()
-        composeRule.onNodeWithContentDescription(
-            text(R.string.gallery_photo_labelled, "Barolo, Nebbiolo"),
-        ).performClick()
+        composeRule.onNodeWithContentDescription(text(R.string.gallery_photo_labelled, "Chablis")).assertIsDisplayed()
+        composeRule
+            .onNodeWithContentDescription(text(R.string.gallery_photo_labelled, "Barolo, Nebbiolo"))
+            .performClick()
 
         assertEquals(listOf(2L), opened)
     }
@@ -82,8 +80,7 @@ class GalleryContentTest {
     fun anUnlabelledNoteStillHasADescription() {
         setContent(GalleryUiState(isLoading = false, hasAnyNotes = true, notes = listOf(note(1))))
 
-        composeRule.onNodeWithContentDescription(text(R.string.gallery_photo_unlabelled))
-            .assertIsDisplayed()
+        composeRule.onNodeWithContentDescription(text(R.string.gallery_photo_unlabelled)).assertIsDisplayed()
     }
 
     @Test
@@ -103,7 +100,7 @@ class GalleryContentTest {
                 hasAnyNotes = true,
                 searchTerm = "cha",
                 matchingLabels = listOf("Chablis", "Chardonnay"),
-            ),
+            )
         )
 
         composeRule.onNodeWithText("Chardonnay").performClick()

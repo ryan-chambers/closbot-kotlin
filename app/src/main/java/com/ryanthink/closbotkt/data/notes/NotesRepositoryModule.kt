@@ -8,19 +8,17 @@ import dagger.hilt.components.SingletonComponent
 import java.time.Clock
 
 /**
- * Notes are stored in Room in every flavor, so unlike the assistant binding this one lives in
- * `main` rather than being swapped per flavor.
+ * Notes are stored in Room in every flavor, so unlike the assistant binding this one lives in `main` rather than being
+ * swapped per flavor.
  */
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class NotesRepositoryModule {
 
-    @Binds
-    abstract fun bindWineNoteRepository(impl: RoomWineNoteRepository): WineNoteRepository
+    @Binds abstract fun bindWineNoteRepository(impl: RoomWineNoteRepository): WineNoteRepository
 
     companion object {
         /** Injected rather than calling `Instant.now()` directly so tests can pin the time. */
-        @Provides
-        fun provideClock(): Clock = Clock.systemUTC()
+        @Provides fun provideClock(): Clock = Clock.systemUTC()
     }
 }

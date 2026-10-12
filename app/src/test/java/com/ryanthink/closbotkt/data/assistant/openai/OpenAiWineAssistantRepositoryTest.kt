@@ -28,14 +28,13 @@ class OpenAiWineAssistantRepositoryTest {
         // Real Responses API replies carry many fields this app doesn't read (usage, status,
         // timestamps, …); ignoreUnknownKeys lets the DTOs stay minimal instead of modelling all of it.
         val json = Json { ignoreUnknownKeys = true }
-        val client = OkHttpClient.Builder()
-            .addInterceptor(OpenAiAuthInterceptor(apiKey = "test-key"))
-            .build()
-        val retrofit = Retrofit.Builder()
-            .baseUrl(server.url("/"))
-            .client(client)
-            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-            .build()
+        val client = OkHttpClient.Builder().addInterceptor(OpenAiAuthInterceptor(apiKey = "test-key")).build()
+        val retrofit =
+            Retrofit.Builder()
+                .baseUrl(server.url("/"))
+                .client(client)
+                .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+                .build()
         repository = OpenAiWineAssistantRepository(retrofit.create(OpenAiApi::class.java))
     }
 
@@ -46,9 +45,10 @@ class OpenAiWineAssistantRepositoryTest {
 
     private fun enqueueReply(id: String, text: String) {
         server.enqueue(
-            MockResponse().setBody(
-                """{"id":"$id","output":[{"type":"message","content":[{"type":"output_text","text":"$text"}]}]}""",
-            ),
+            MockResponse()
+                .setBody(
+                    """{"id":"$id","output":[{"type":"message","content":[{"type":"output_text","text":"$text"}]}]}"""
+                )
         )
     }
 

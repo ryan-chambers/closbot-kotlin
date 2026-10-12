@@ -11,8 +11,5 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class AssistantModule {
 
-    @Binds
-    abstract fun bindWineAssistantRepository(
-        impl: OpenAiWineAssistantRepository,
-    ): WineAssistantRepository
+    @Binds abstract fun bindWineAssistantRepository(impl: OpenAiWineAssistantRepository): WineAssistantRepository
 }

@@ -8,16 +8,15 @@ import java.io.File
 import javax.inject.Inject
 
 /**
- * Captures live in a `camera` folder inside the app's cache directory, which the system may clear
- * when space is short. That suits them: a capture only matters until the note is saved, and then
- * [ContentResolverPhotoImporter] copies it into permanent storage.
+ * Captures live in a `camera` folder inside the app's cache directory, which the system may clear when space is short.
+ * That suits them: a capture only matters until the note is saved, and then [ContentResolverPhotoImporter] copies it
+ * into permanent storage.
  *
- * The URIs come from a [FileProvider] declared in the manifest; `res/xml/file_paths.xml` says which
- * folder it may share.
+ * The URIs come from a [FileProvider] declared in the manifest; `res/xml/file_paths.xml` says which folder it may
+ * share.
  */
-class FileProviderCameraPhotoFiles @Inject constructor(
-    @ApplicationContext private val context: Context,
-) : CameraPhotoFiles {
+class FileProviderCameraPhotoFiles @Inject constructor(@ApplicationContext private val context: Context) :
+    CameraPhotoFiles {
 
     private val directory = File(context.cacheDir, CAMERA_DIRECTORY)
     private val authority = "${context.packageName}$AUTHORITY_SUFFIX"

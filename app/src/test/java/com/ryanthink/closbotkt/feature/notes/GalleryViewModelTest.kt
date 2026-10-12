@@ -16,8 +16,7 @@ import org.junit.Test
 
 class GalleryViewModelTest {
 
-    @get:Rule
-    val mainDispatcherRule = MainDispatcherRule()
+    @get:Rule val mainDispatcherRule = MainDispatcherRule()
 
     private val repository = FakeWineNoteRepository()
     private val viewModel = GalleryViewModel(repository, PhotoStorage(File("photos")))

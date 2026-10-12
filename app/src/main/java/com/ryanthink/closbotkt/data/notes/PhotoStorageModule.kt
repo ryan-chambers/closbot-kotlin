@@ -11,18 +11,16 @@ import java.io.File
 import javax.inject.Singleton
 
 /**
- * Photos go in the app's private `filesDir`: other apps can't read them and no storage permission
- * is needed. They are removed on uninstall, which is the same lifetime as the notes database.
+ * Photos go in the app's private `filesDir`: other apps can't read them and no storage permission is needed. They are
+ * removed on uninstall, which is the same lifetime as the notes database.
  */
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class PhotoStorageModule {
 
-    @Binds
-    abstract fun bindPhotoImporter(impl: ContentResolverPhotoImporter): PhotoImporter
+    @Binds abstract fun bindPhotoImporter(impl: ContentResolverPhotoImporter): PhotoImporter
 
-    @Binds
-    abstract fun bindCameraPhotoFiles(impl: FileProviderCameraPhotoFiles): CameraPhotoFiles
+    @Binds abstract fun bindCameraPhotoFiles(impl: FileProviderCameraPhotoFiles): CameraPhotoFiles
 
     companion object {
         private const val PHOTOS_DIRECTORY = "photos"

@@ -17,7 +17,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class AddNoteViewModel @Inject constructor(
+class AddNoteViewModel
+@Inject
+constructor(
     private val repository: WineNoteRepository,
     private val photoImporter: PhotoImporter,
     private val cameraFiles: CameraPhotoFiles,
@@ -38,9 +40,8 @@ class AddNoteViewModel @Inject constructor(
     /**
      * Prepares a file for the camera and returns its URI for the screen to launch the camera with.
      *
-     * The camera app is in front while the photo is taken, so Android may kill this process
-     * meanwhile. The target is kept in [savedStateHandle], which survives that, so the result can
-     * still be matched to it afterwards.
+     * The camera app is in front while the photo is taken, so Android may kill this process meanwhile. The target is
+     * kept in [savedStateHandle], which survives that, so the result can still be matched to it afterwards.
      */
     fun onTakePhotoRequested(): String {
         savedStateHandle.remove<String>(PENDING_CAMERA_TARGET)?.let(cameraFiles::discard)
@@ -73,7 +74,7 @@ class AddNoteViewModel @Inject constructor(
                         photoFileName = photoFileName,
                         details = form.details.trim(),
                         labels = parseLabels(form.labelsText),
-                    ),
+                    )
                 )
                 // The note has its own copy now, so a camera capture is no longer needed.
                 cameraFiles.discard(source)

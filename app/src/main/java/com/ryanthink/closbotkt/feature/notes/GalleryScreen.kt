@@ -40,8 +40,8 @@ import com.ryanthink.closbotkt.data.notes.WineNote
 import java.io.File
 
 /**
- * Stateful entry point: connects [GalleryContent] to its [GalleryViewModel]. It takes a callback
- * rather than a NavController, so the content can be previewed and tested without navigation.
+ * Stateful entry point: connects [GalleryContent] to its [GalleryViewModel]. It takes a callback rather than a
+ * NavController, so the content can be previewed and tested without navigation.
  */
 @Composable
 fun GalleryScreen(
@@ -134,20 +134,19 @@ private fun PhotoGrid(
         // The id as key lets Compose keep each cell's state when notes are added, removed or
         // reordered, instead of matching cells by position.
         items(notes, key = WineNote::id) { note ->
-            val description = if (note.labels.isEmpty()) {
-                stringResource(R.string.gallery_photo_unlabelled)
-            } else {
-                stringResource(R.string.gallery_photo_labelled, note.labels.joinToString())
-            }
+            val description =
+                if (note.labels.isEmpty()) {
+                    stringResource(R.string.gallery_photo_unlabelled)
+                } else {
+                    stringResource(R.string.gallery_photo_labelled, note.labels.joinToString())
+                }
             // Coil decodes the photo at the size of this cell rather than at camera resolution,
             // and caches the result.
             AsyncImage(
                 model = photoFile(note),
                 contentDescription = description,
-                modifier = Modifier
-                    .aspectRatio(1f)
-                    .clip(MaterialTheme.shapes.medium)
-                    .clickable { onNoteClick(note.id) },
+                modifier =
+                    Modifier.aspectRatio(1f).clip(MaterialTheme.shapes.medium).clickable { onNoteClick(note.id) },
                 placeholder = missingPhoto,
                 error = missingPhoto,
                 contentScale = ContentScale.Crop,

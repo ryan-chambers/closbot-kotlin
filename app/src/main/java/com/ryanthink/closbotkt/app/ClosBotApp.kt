@@ -31,9 +31,10 @@ import com.ryanthink.closbotkt.feature.vintage.VintageScreen
 fun ClosBotApp(navController: NavHostController = rememberNavController()) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backStackEntry?.destination
-    val showBottomBar = TopLevelDestination.entries.any { top ->
-        currentDestination?.hierarchy?.any { it.hasRoute(top.route::class) } == true
-    }
+    val showBottomBar =
+        TopLevelDestination.entries.any { top ->
+            currentDestination?.hierarchy?.any { it.hasRoute(top.route::class) } == true
+        }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -42,8 +43,7 @@ fun ClosBotApp(navController: NavHostController = rememberNavController()) {
                 NavigationBar {
                     TopLevelDestination.entries.forEach { top ->
                         NavigationBarItem(
-                            selected = currentDestination?.hierarchy
-                                ?.any { it.hasRoute(top.route::class) } == true,
+                            selected = currentDestination?.hierarchy?.any { it.hasRoute(top.route::class) } == true,
                             onClick = { navController.navigateToTopLevel(top) },
                             icon = { Icon(top.icon, contentDescription = null) },
                             label = { Text(stringResource(top.labelRes)) },
