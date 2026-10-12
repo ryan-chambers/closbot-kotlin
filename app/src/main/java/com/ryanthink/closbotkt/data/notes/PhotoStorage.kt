@@ -3,6 +3,7 @@ package com.ryanthink.closbotkt.data.notes
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
+import java.nio.file.Files
 import java.util.UUID
 
 /**
@@ -35,11 +36,8 @@ class PhotoStorage(private val directory: File) {
         return fileName
     }
 
-    /** @throws IOException if [photoFileName] can't be deleted */
     fun delete(photoFileName: String) {
         val file = fileFor(photoFileName)
-        if (!file.delete()) {
-            throw IOException("Delete failed")
-        }
+        Files.deleteIfExists(file.toPath())
     }
 }

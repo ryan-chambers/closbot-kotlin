@@ -97,12 +97,7 @@ class PhotoStorageTest {
     }
 
     @Test
-    fun `deleting file that does not exist throws exception`() {
-        try {
-            storage.delete("oops")
-            fail("expected an IOException")
-        } catch (e: IOException) {
-            assertEquals("Delete failed", e.message)
-        }
+    fun `deleting file that does not exist does not throw exception`() {
+        storage.delete("oops")
     }
 }
