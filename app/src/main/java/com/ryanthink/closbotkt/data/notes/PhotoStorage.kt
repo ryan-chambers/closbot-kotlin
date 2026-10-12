@@ -36,6 +36,11 @@ class PhotoStorage(private val directory: File) {
         return fileName
     }
 
+    /**
+     * Deletes the photo. Does nothing if there is no such photo, so repeating a delete is safe.
+     *
+     * @throws IOException if the photo exists but can't be deleted
+     */
     fun delete(photoFileName: String) {
         val file = fileFor(photoFileName)
         Files.deleteIfExists(file.toPath())

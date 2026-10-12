@@ -6,6 +6,7 @@ import java.io.InputStream
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Rule
@@ -99,5 +100,17 @@ class PhotoStorageTest {
     @Test
     fun `deleting file that does not exist does not throw exception`() {
         storage.delete("oops")
+    }
+
+    @Test
+    fun `a photo that exists but cannot be deleted is reported`() {
+        // A directory with something inside can't be deleted, which stands in for a file the system won't let go.
+        val stuck = storage.fileFor("stuck")
+        File(stuck, "inner").apply {
+            parentFile.mkdirs()
+            writeBytes(byteArrayOf(1))
+        }
+
+        assertThrows(IOException::class.java) { storage.delete("stuck") }
     }
 }
