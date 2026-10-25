@@ -10,6 +10,7 @@ class RoomWineNoteRepository
 constructor(
     private val dao: WineNoteDao,
     private val clock: Clock,
+    private val photoStorage: PhotoStorage,
 ) : WineNoteRepository {
 
     override fun observeNotes(): Flow<List<WineNote>> =
@@ -17,9 +18,13 @@ constructor(
 
     override suspend fun getNote(id: Long): WineNote? = dao.getById(id)?.toDomain()
 
-    override suspend fun addNote(note: NewWineNote): Long = dao.insert(note.toEntity(createdAt = clock.instant()))
+    override suspend fun addNote(note: NewWineNote): Long =
+        dao.insert(note.toEntity(createdAt = clock.instant()))
 
     override suspend fun updateNote(note: WineNote) = dao.update(note.toEntity())
 
-    override suspend fun deleteNote(note: WineNote) = dao.delete(note.toEntity())
+    override suspend fun deleteNote(note: WineNote) {
+        dao.delete(note.toEntity())
+        photoStorage.delete(note.photoFileName)
+    }
 }
