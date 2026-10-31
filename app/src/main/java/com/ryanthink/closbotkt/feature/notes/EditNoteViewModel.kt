@@ -53,6 +53,7 @@ constructor(
     fun onLabelsChange(newLabels: String) = editing { it.copy(labelsText = newLabels) }
 
     fun onSave() {
+        val current = note ?: return
         val form = _uiState.value
         if (form is EditNoteUiState.Editing) {
             if (!form.isBusy) {
@@ -60,12 +61,9 @@ constructor(
 
                 viewModelScope.launch {
                     repository.updateNote(
-                        WineNote(
-                            id = noteId,
-                            photoFileName = form.photoFileName,
+                        current.copy(
                             details = form.details.trim(),
                             labels = parseLabels(form.labelsText),
-                            createdAt = note?.createdAt!!,
                         )
                     )
 
@@ -76,6 +74,7 @@ constructor(
     }
 
     fun onDeleteConfirmed() {
+        val current = note ?: return
         val form = _uiState.value
         if (form is EditNoteUiState.Editing) {
             if (!form.isBusy) {
@@ -83,7 +82,7 @@ constructor(
                     editing { it.copy(isBusy = true, hasError = false) }
 
                     try {
-                        repository.deleteNote(note!!)
+                        repository.deleteNote(current)
                         editing { it.copy(isBusy = false, isFinished = true) }
                     } catch (_: IOException) {
                         editing { it.copy(hasError = true, isBusy = false) }
