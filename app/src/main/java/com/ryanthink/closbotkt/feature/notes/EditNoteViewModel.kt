@@ -7,13 +7,13 @@ import com.ryanthink.closbotkt.data.notes.PhotoStorage
 import com.ryanthink.closbotkt.data.notes.WineNote
 import com.ryanthink.closbotkt.data.notes.WineNoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.io.IOException
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.IOException
-import javax.inject.Inject
 
 @HiltViewModel
 class EditNoteViewModel
@@ -94,10 +94,9 @@ constructor(
 
     fun onFinishedHandled() = editing { it.copy(isFinished = false) }
 
-    private fun editing(change: (EditNoteUiState.Editing) -> EditNoteUiState.Editing) =
-        _uiState.update { state ->
-            if (state is EditNoteUiState.Editing) change(state) else state
-        }
+    private fun editing(change: (EditNoteUiState.Editing) -> EditNoteUiState.Editing) = _uiState.update { state ->
+        if (state is EditNoteUiState.Editing) change(state) else state
+    }
 
     private companion object {
         const val NOTE_ID = "noteId"
