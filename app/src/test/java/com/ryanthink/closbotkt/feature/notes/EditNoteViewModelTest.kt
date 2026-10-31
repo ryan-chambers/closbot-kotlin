@@ -114,6 +114,15 @@ class EditNoteViewModelTest {
     }
 
     @Test
+    fun `typing keeps spaces so words can be separated`() = runTest {
+        val viewModel = viewModelFor(savedNote())
+
+        viewModel.onDetailsChange("Lovely ")
+
+        assertEquals("Lovely ", viewModel.editing().details)
+    }
+
+    @Test
     fun `saving stores the trimmed details and parsed labels, then finishes`() = runTest {
         val id = savedNote(details = "Lovely with fish", labels = listOf("Chablis"))
         val viewModel = viewModelFor(id)

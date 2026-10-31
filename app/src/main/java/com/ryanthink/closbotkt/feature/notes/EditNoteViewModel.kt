@@ -48,7 +48,7 @@ constructor(
         }
     }
 
-    fun onDetailsChange(newDetails: String) = editing { it.copy(details = newDetails.trim()) }
+    fun onDetailsChange(newDetails: String) = editing { it.copy(details = newDetails) }
 
     fun onLabelsChange(newLabels: String) = editing { it.copy(labelsText = newLabels) }
 
