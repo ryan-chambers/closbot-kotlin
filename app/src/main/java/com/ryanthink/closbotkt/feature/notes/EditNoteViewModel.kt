@@ -21,10 +21,10 @@ class EditNoteViewModel
 constructor(
     private val repository: WineNoteRepository,
     private val photoStorage: PhotoStorage,
-    private val savedHandleState: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     // TODO extract constant
-    private val noteId: Long = checkNotNull(savedHandleState["noteId"])
+    private val noteId: Long = checkNotNull(savedStateHandle["noteId"])
     private var note: WineNote? = null
 
     private val _uiState = MutableStateFlow<EditNoteUiState>(EditNoteUiState.Loading)
@@ -78,16 +78,18 @@ constructor(
     fun onDeleteConfirmed() {
         val form = _uiState.value
         if (form is EditNoteUiState.Editing) {
-            viewModelScope.launch {
-                editing { it.copy(isBusy = true, hasError = false) }
+            if (!form.isBusy) {
+                viewModelScope.launch {
+                    editing { it.copy(isBusy = true, hasError = false) }
 
-                try {
-                    repository.deleteNote(note!!)
-                    photoStorage.delete(form.photoFileName)
-                    editing { it.copy(isBusy = false, isFinished = true) }
-                } catch (e: IOException) {
-                    editing { it.copy(hasError = true, isBusy = false) }
-                    // TODO log exception
+                    try {
+                        repository.deleteNote(note!!)
+                        photoStorage.delete(form.photoFileName)
+                        editing { it.copy(isBusy = false, isFinished = true) }
+                    } catch (_: IOException) {
+                        editing { it.copy(hasError = true, isBusy = false) }
+                        // TODO log exception
+                    }
                 }
             }
         }
@@ -95,8 +97,7 @@ constructor(
 
     fun onFinishedHandled() = editing { it.copy(isFinished = false) }
 
-    private fun editing(change: (EditNoteUiState.Editing) -> EditNoteUiState.Editing) =
-        _uiState.update { state ->
-            if (state is EditNoteUiState.Editing) change(state) else state
-        }
+    private fun editing(change: (EditNoteUiState.Editing) -> EditNoteUiState.Editing) = _uiState.update { state ->
+        if (state is EditNoteUiState.Editing) change(state) else state
+    }
 }

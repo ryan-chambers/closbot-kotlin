@@ -18,8 +18,7 @@ constructor(
 
     override suspend fun getNote(id: Long): WineNote? = dao.getById(id)?.toDomain()
 
-    override suspend fun addNote(note: NewWineNote): Long =
-        dao.insert(note.toEntity(createdAt = clock.instant()))
+    override suspend fun addNote(note: NewWineNote): Long = dao.insert(note.toEntity(createdAt = clock.instant()))
 
     override suspend fun updateNote(note: WineNote) = dao.update(note.toEntity())
 
