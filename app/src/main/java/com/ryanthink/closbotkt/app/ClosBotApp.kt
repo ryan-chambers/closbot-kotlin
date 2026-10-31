@@ -67,7 +67,10 @@ fun ClosBotApp(navController: NavHostController = rememberNavController()) {
             }
             composable<VintageRoute> { VintageScreen() }
             composable<EditNoteRoute> { entry ->
-                EditNoteScreen(noteId = entry.toRoute<EditNoteRoute>().noteId)
+                EditNoteScreen(
+                    // TODO
+                    onDone = { navController.navigateToTopLevel(TopLevelDestination.Gallery)},
+                    noteId = entry.toRoute<EditNoteRoute>().noteId)
             }
         }
     }
