@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ryanthink.closbotkt.data.notes.PhotoStorage
+import com.ryanthink.closbotkt.data.notes.WineNote
 import com.ryanthink.closbotkt.data.notes.WineNoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -23,38 +24,62 @@ constructor(
 ) : ViewModel() {
     // TODO extract constant
     private val noteId: Long = checkNotNull(savedHandleState["noteId"])
+    private var note: WineNote? = null
 
     private val _uiState = MutableStateFlow<EditNoteUiState>(EditNoteUiState.Loading)
     val uiState: StateFlow<EditNoteUiState> = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
-            val photo = repository.getNote(noteId)
-            if (photo == null) {
+            val repoNote = repository.getNote(noteId)
+            if (repoNote == null) {
                 _uiState.update { EditNoteUiState.NotFound }
             } else {
+                note = repoNote
                 _uiState.update {
                     EditNoteUiState.Editing(
-                        photoFileName = photo.photoFileName,
-                        details = photo.details,
-                        labelsText = formatLabels(photo.labels),
+                        photoFileName = repoNote.photoFileName,
+                        details = repoNote.details,
+                        labelsText = formatLabels(repoNote.labels),
                     )
                 }
             }
         }
     }
 
-    fun onDetailsChange(newDetails: String) = _uiState.update { state ->
-        if (state is EditNoteUiState.Editing) state.copy(details = newDetails) else state
-    }
+    fun onDetailsChange(newDetails: String) = editing { it.copy(details = newDetails.trim()) }
 
-    fun onLabelsChange(newLabels: String) = _uiState.update { state ->
-        if (state is EditNoteUiState.Editing) state.copy(labelsText = newLabels) else state
-    }
+    fun onLabelsChange(newLabels: String) = editing { it.copy(labelsText = newLabels) }
 
-    fun onSave() {}
+    fun onSave() {
+        val form = _uiState.value
+        if (form is EditNoteUiState.Editing) {
+            if (!form.isBusy) {
+                editing { it.copy(isBusy = true) }
+
+                viewModelScope.launch {
+                    repository.updateNote(
+                        WineNote(
+                            id = noteId,
+                            photoFileName = form.photoFileName,
+                            details = form.details.trim(),
+                            labels = parseLabels(form.labelsText),
+                            createdAt = note?.createdAt!!,
+                        )
+                    )
+
+                    editing { it.copy(hasError = false, isBusy = false, isFinished = true) }
+                }
+            }
+        }
+    }
 
     fun onDeleteConfirmed() {}
 
-    fun onFinishedHandled() {}
+    fun onFinishedHandled() = editing { it.copy(isFinished = false) }
+
+    private fun editing(change: (EditNoteUiState.Editing) -> EditNoteUiState.Editing) =
+        _uiState.update { state ->
+            if (state is EditNoteUiState.Editing) change(state) else state
+        }
 }
