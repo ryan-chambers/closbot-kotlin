@@ -7,6 +7,7 @@ import com.ryanthink.closbotkt.data.notes.PhotoStorage
 import com.ryanthink.closbotkt.data.notes.WineNote
 import com.ryanthink.closbotkt.data.notes.WineNoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.io.IOException
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -74,7 +75,23 @@ constructor(
         }
     }
 
-    fun onDeleteConfirmed() {}
+    fun onDeleteConfirmed() {
+        val form = _uiState.value
+        if (form is EditNoteUiState.Editing) {
+            viewModelScope.launch {
+                editing { it.copy(isBusy = true, hasError = false) }
+
+                try {
+                    repository.deleteNote(note!!)
+                    photoStorage.delete(form.photoFileName)
+                    editing { it.copy(isBusy = false, isFinished = true) }
+                } catch (e: IOException) {
+                    editing { it.copy(hasError = true, isBusy = false) }
+                    // TODO log exception
+                }
+            }
+        }
+    }
 
     fun onFinishedHandled() = editing { it.copy(isFinished = false) }
 
