@@ -95,8 +95,7 @@ constructor(
 
     fun onFinishedHandled() = editing { it.copy(isFinished = false) }
 
-    private fun editing(change: (EditNoteUiState.Editing) -> EditNoteUiState.Editing) =
-        _uiState.update { state ->
-            if (state is EditNoteUiState.Editing) change(state) else state
-        }
+    private fun editing(change: (EditNoteUiState.Editing) -> EditNoteUiState.Editing) = _uiState.update { state ->
+        if (state is EditNoteUiState.Editing) change(state) else state
+    }
 }
