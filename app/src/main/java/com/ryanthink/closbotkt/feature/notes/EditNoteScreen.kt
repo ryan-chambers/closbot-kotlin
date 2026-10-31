@@ -13,6 +13,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import java.io.File
 
 @Composable
 fun EditNoteScreen(
@@ -24,28 +25,29 @@ fun EditNoteScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     EditNoteContent(
-        state = state
+        state = state,
+        photoFile = viewModel.fileForPhoto(),
+        modifier = modifier,
     )
 }
 
 @Composable
 fun EditNoteContent(
     state: EditNoteUiState,
+    photoFile: File?,
     modifier: Modifier = Modifier,
 
-) {
+    ) {
     Column(
         modifier = modifier
     ) {
-        if (state is EditNoteUiState.Editing) {
-
+        if (state is EditNoteUiState.Editing && photoFile != null) {
             AsyncImage(
-                model = state.photoFileName,
+                model = photoFile,
                 contentDescription ="TODO",
                 modifier = Modifier.fillMaxWidth().aspectRatio(4f / 3f).clip(MaterialTheme.shapes.medium),
                 contentScale = ContentScale.Crop,
             )
-            Text("Can you see the photo?")
         } else {
             Text("Could not load photo")
         }
