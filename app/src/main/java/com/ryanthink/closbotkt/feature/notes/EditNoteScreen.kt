@@ -4,12 +4,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -29,12 +35,21 @@ fun EditNoteScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val finished = (state as? EditNoteUiState.Editing)?.isFinished == true
+    LaunchedEffect(finished) {
+        if (finished) {
+            onDone()
+            viewModel.onFinishedHandled()
+        }
+    }
+
     EditNoteContent(
         state = state,
         photoFile = viewModel.fileForPhoto(),
         onDetailsChange = viewModel::onDetailsChange,
         onLabelsChange = viewModel::onLabelsChange,
         onSave = viewModel::onSave,
+        onDeleteConfirmed = viewModel::onDeleteConfirmed,
         modifier = modifier,
     )
 }
@@ -46,8 +61,11 @@ fun EditNoteContent(
     onDetailsChange: (String) -> Unit,
     onLabelsChange: (String) -> Unit,
     onSave: () -> Unit,
+    onDeleteConfirmed: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var confirmingDelete by rememberSaveable { mutableStateOf(false) }
+
     Column(modifier = modifier) {
         when (state) {
             is EditNoteUiState.Editing if photoFile != null -> {
@@ -83,10 +101,20 @@ fun EditNoteContent(
                 )
 
                 Row() {
-                    OutlinedButton(onClick = onSave,
+                    OutlinedButton(
+                        onClick = onSave,
                         enabled = !state.isBusy,
-                        modifier = Modifier.weight(1f)) {
+                        modifier = Modifier.weight(1f),
+                    ) {
                         Text(stringResource(R.string.edit_note_save))
+                    }
+
+                    OutlinedButton(
+                        onClick = { confirmingDelete = true },
+                        enabled = !state.isBusy,
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Text(stringResource(R.string.edit_note_delete))
                     }
                 }
             }
@@ -100,5 +128,28 @@ fun EditNoteContent(
                 Text("Could not load photo")
             }
         }
+    }
+
+    if (confirmingDelete) {
+        AlertDialog(
+            onDismissRequest = { confirmingDelete = false }, // back button or tap outside
+            title = { Text(stringResource(R.string.edit_note_delete_title)) },
+            text = { Text(stringResource(R.string.edit_note_delete_message)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        confirmingDelete = false
+                        onDeleteConfirmed()
+                    }
+                ) {
+                    Text(stringResource(R.string.edit_note_delete))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmingDelete = false }) {
+                    Text(stringResource(R.string.edit_note_cancel))
+                }
+            },
+        )
     }
 }
