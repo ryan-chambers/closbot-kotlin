@@ -75,6 +75,20 @@ class EditNoteContentTest {
     }
 
     @Test
+    fun showsAProgressIndicatorWhileTheNoteLoads() {
+        setContent(EditNoteUiState.Loading)
+
+        composeRule.onNodeWithContentDescription(text(R.string.edit_note_loading)).assertIsDisplayed()
+    }
+
+    @Test
+    fun explainsWhenTheNoteCannotBeFound() {
+        setContent(EditNoteUiState.NotFound)
+
+        composeRule.onNodeWithText(text(R.string.edit_note_not_found)).assertIsDisplayed()
+    }
+
+    @Test
     fun aNoteWithoutDetailsHasAGenericPhotoDescription() {
         setContent(editing())
 

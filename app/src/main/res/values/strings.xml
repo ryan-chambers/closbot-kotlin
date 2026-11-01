@@ -40,4 +40,6 @@
     <string name="edit_note_delete_message">Are you sure you want to delete this note?</string>
     <string name="edit_note_delete">Delete</string>
     <string name="edit_note_cancel">Cancel</string>
+    <string name="edit_note_not_found">Couldn\'t load this note.</string>
+    <string name="edit_note_loading">Loading</string>
 </resources>
