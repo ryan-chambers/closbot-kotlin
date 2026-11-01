@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,6 +30,7 @@ fun EditNoteScreen(
     EditNoteContent(
         state = state,
         photoFile = viewModel.fileForPhoto(),
+        onDetailsChange = viewModel::onDetailsChange,
         modifier = modifier,
     )
 }
@@ -37,12 +39,10 @@ fun EditNoteScreen(
 fun EditNoteContent(
     state: EditNoteUiState,
     photoFile: File?,
+    onDetailsChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-
-    ) {
-    Column(
-        modifier = modifier
-    ) {
+) {
+    Column(modifier = modifier) {
         when (state) {
             is EditNoteUiState.Editing if photoFile != null -> {
                 val description =
@@ -57,6 +57,14 @@ fun EditNoteContent(
                     contentDescription = description,
                     modifier = Modifier.fillMaxWidth().aspectRatio(4f / 3f).clip(MaterialTheme.shapes.medium),
                     contentScale = ContentScale.Crop,
+                )
+
+                OutlinedTextField(
+                    value = state.details,
+                    onValueChange = onDetailsChange,
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text(stringResource(R.string.edit_note_edit_details)) },
+                    minLines = 3,
                 )
             }
 

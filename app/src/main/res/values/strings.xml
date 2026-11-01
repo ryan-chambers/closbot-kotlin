@@ -32,4 +32,5 @@
     <string name="chat_error">Something went wrong. Please try again.</string>
 
     <string name="edit_note_no_details">Wine note</string>
+    <string name="edit_note_edit_details">Details</string>
 </resources>
