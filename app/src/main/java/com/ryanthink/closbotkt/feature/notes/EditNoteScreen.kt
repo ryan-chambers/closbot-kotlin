@@ -31,6 +31,7 @@ fun EditNoteScreen(
         state = state,
         photoFile = viewModel.fileForPhoto(),
         onDetailsChange = viewModel::onDetailsChange,
+        onLabelsChange = viewModel::onLabelsChange,
         modifier = modifier,
     )
 }
@@ -40,6 +41,7 @@ fun EditNoteContent(
     state: EditNoteUiState,
     photoFile: File?,
     onDetailsChange: (String) -> Unit,
+    onLabelsChange: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
@@ -65,6 +67,15 @@ fun EditNoteContent(
                     modifier = Modifier.fillMaxWidth(),
                     label = { Text(stringResource(R.string.edit_note_edit_details)) },
                     minLines = 3,
+                )
+
+                OutlinedTextField(
+                    value = state.labelsText,
+                    onValueChange = onLabelsChange,
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text(stringResource(R.string.edit_note_labels)) },
+                    supportingText = { Text(stringResource(R.string.edit_note_labels_hint)) },
+                    singleLine = true,
                 )
             }
 
