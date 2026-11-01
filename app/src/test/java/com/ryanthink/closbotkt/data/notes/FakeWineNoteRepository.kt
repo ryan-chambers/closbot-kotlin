@@ -1,5 +1,6 @@
 package com.ryanthink.closbotkt.data.notes
 
+import java.io.File
 import java.time.Clock
 
 /**
@@ -7,4 +8,4 @@ import java.time.Clock
  * assigned, newest first, [observeNotes] re-emitting) without a database.
  */
 class FakeWineNoteRepository(clock: Clock = Clock.systemUTC()) :
-    WineNoteRepository by RoomWineNoteRepository(FakeWineNoteDao(), clock)
+    WineNoteRepository by RoomWineNoteRepository(FakeWineNoteDao(), clock, PhotoStorage(File("photos")))

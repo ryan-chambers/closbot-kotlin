@@ -89,9 +89,6 @@ constructor(
 
     fun onSavedHandled() = _uiState.update { it.copy(isSaved = false) }
 
-    private fun parseLabels(text: String): List<String> =
-        text.split(',').map(String::trim).filter(String::isNotEmpty).distinct()
-
     private companion object {
         const val PENDING_CAMERA_TARGET = "pending_camera_target"
     }

@@ -6,6 +6,7 @@ import java.io.InputStream
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Rule
@@ -72,5 +73,44 @@ class PhotoStorageTest {
 
         assertTrue(closed)
         assertFalse(directory.listFiles().orEmpty().isEmpty())
+    }
+
+    @Test
+    fun `delete removes stored file`() {
+        val createdFile = storage.copyIn(byteArrayOf(1).inputStream())
+
+        storage.delete(createdFile)
+
+        assertTrue(directory.listFiles().orEmpty().isEmpty())
+    }
+
+    @Test
+    fun `delete only removes file specified`() {
+        val file1 = storage.copyIn(byteArrayOf(1).inputStream())
+        val file2 = storage.copyIn(byteArrayOf(1).inputStream())
+
+        storage.delete(file1)
+
+        assertEquals(1, directory.listFiles().orEmpty().size)
+        val remainingFiles = directory.listFiles().orEmpty()
+        assertFalse(remainingFiles.isEmpty())
+        assertTrue(remainingFiles.get(0).name.contains(file2))
+    }
+
+    @Test
+    fun `deleting file that does not exist does not throw exception`() {
+        storage.delete("oops")
+    }
+
+    @Test
+    fun `a photo that exists but cannot be deleted is reported`() {
+        // A directory with something inside can't be deleted, which stands in for a file the system won't let go.
+        val stuck = storage.fileFor("stuck")
+        File(stuck, "inner").apply {
+            parentFile.mkdirs()
+            writeBytes(byteArrayOf(1))
+        }
+
+        assertThrows(IOException::class.java) { storage.delete("stuck") }
     }
 }

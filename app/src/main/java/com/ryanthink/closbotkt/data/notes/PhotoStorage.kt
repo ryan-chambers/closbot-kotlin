@@ -3,6 +3,7 @@ package com.ryanthink.closbotkt.data.notes
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
+import java.nio.file.Files
 import java.util.UUID
 
 /**
@@ -33,5 +34,15 @@ class PhotoStorage(private val directory: File) {
             throw e
         }
         return fileName
+    }
+
+    /**
+     * Deletes the photo. Does nothing if there is no such photo, so repeating a delete is safe.
+     *
+     * @throws IOException if the photo exists but can't be deleted
+     */
+    fun delete(photoFileName: String) {
+        val file = fileFor(photoFileName)
+        Files.deleteIfExists(file.toPath())
     }
 }
