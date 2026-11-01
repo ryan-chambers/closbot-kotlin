@@ -1,9 +1,11 @@
 package com.ryanthink.closbotkt.feature.notes
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +34,7 @@ fun EditNoteScreen(
         photoFile = viewModel.fileForPhoto(),
         onDetailsChange = viewModel::onDetailsChange,
         onLabelsChange = viewModel::onLabelsChange,
+        onSave = viewModel::onSave,
         modifier = modifier,
     )
 }
@@ -42,6 +45,7 @@ fun EditNoteContent(
     photoFile: File?,
     onDetailsChange: (String) -> Unit,
     onLabelsChange: (String) -> Unit,
+    onSave: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
@@ -77,6 +81,14 @@ fun EditNoteContent(
                     supportingText = { Text(stringResource(R.string.edit_note_labels_hint)) },
                     singleLine = true,
                 )
+
+                Row() {
+                    OutlinedButton(onClick = onSave,
+                        enabled = !state.isBusy,
+                        modifier = Modifier.weight(1f)) {
+                        Text(stringResource(R.string.edit_note_save))
+                    }
+                }
             }
 
             is EditNoteUiState.Loading -> {
