@@ -6,19 +6,16 @@ import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDialog
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.waitUntilExactlyOneExists
 import com.ryanthink.closbotkt.data.notes.NewWineNote
 import com.ryanthink.closbotkt.data.notes.WineNoteRepository
-import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 
 /**
@@ -30,11 +27,7 @@ import org.junit.Test
  */
 @OptIn(ExperimentalTestApi::class)
 @HiltAndroidTest
-class EditNoteFlowTest {
-
-    // Hilt's rule must run first: it builds the dependency graph that the activity then starts with.
-    @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
-    @get:Rule(order = 1) val composeRule = createAndroidComposeRule<MainActivity>()
+class EditNoteFlowTest : HiltComposeTest() {
 
     @Inject lateinit var repository: WineNoteRepository
 
@@ -47,8 +40,6 @@ class EditNoteFlowTest {
             )
         }
     }
-
-    private fun text(id: Int, vararg args: Any) = composeRule.activity.getString(id, *args)
 
     private fun noteLabelled(label: String) = hasContentDescription(text(R.string.gallery_photo_labelled, label))
 
