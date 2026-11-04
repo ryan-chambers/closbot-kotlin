@@ -9,14 +9,14 @@ import com.ryanthink.closbotkt.data.notes.PhotoStorage
 import com.ryanthink.closbotkt.data.notes.WineNote
 import com.ryanthink.closbotkt.data.notes.WineNoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.io.File
+import java.io.IOException
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.File
-import java.io.IOException
-import javax.inject.Inject
 
 @HiltViewModel
 class EditNoteViewModel

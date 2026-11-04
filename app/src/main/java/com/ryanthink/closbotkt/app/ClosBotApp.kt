@@ -66,9 +66,7 @@ fun ClosBotApp(navController: NavHostController = rememberNavController()) {
             }
             composable<VintageRoute> { VintageScreen() }
             composable<EditNoteRoute> { _ ->
-                EditNoteScreen(
-                    onDone = { navController.popBackStack() },
-                )
+                EditNoteScreen(onDone = { navController.popBackStack() })
             }
         }
     }
