@@ -1,18 +1,14 @@
 package com.ryanthink.closbotkt
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
-import org.junit.Rule
+import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Test
 
-class NavigationShellTest {
-
-    @get:Rule val composeRule = createAndroidComposeRule<MainActivity>()
-
-    private fun text(id: Int, vararg args: Any) = composeRule.activity.getString(id, *args)
+@HiltAndroidTest
+class NavigationShellTest : HiltComposeTest() {
 
     @Test
     fun startsOnChatWithAllTabsVisible() {
