@@ -25,7 +25,6 @@ constructor(
     private val photoStorage: PhotoStorage,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    //    private val noteId: Long = savedStateHandle.toRoute<EditNoteRoute>().noteId
     private val noteId: Long = checkNotNull(savedStateHandle.get<Long>(EditNoteRoute::noteId.name))
 
     private var note: WineNote? = null
