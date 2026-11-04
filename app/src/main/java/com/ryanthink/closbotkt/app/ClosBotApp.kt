@@ -20,7 +20,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import com.ryanthink.closbotkt.feature.chat.ChatScreen
 import com.ryanthink.closbotkt.feature.notes.AddNoteScreen
 import com.ryanthink.closbotkt.feature.notes.EditNoteScreen
@@ -66,11 +65,8 @@ fun ClosBotApp(navController: NavHostController = rememberNavController()) {
                 GalleryScreen(onNoteClick = { navController.navigate(EditNoteRoute(it)) })
             }
             composable<VintageRoute> { VintageScreen() }
-            composable<EditNoteRoute> { entry ->
-                EditNoteScreen(
-                    onDone = { navController.popBackStack() },
-                    noteId = entry.toRoute<EditNoteRoute>().noteId,
-                )
+            composable<EditNoteRoute> {
+                EditNoteScreen(onDone = { navController.popBackStack() })
             }
         }
     }

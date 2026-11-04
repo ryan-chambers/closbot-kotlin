@@ -3,6 +3,7 @@ package com.ryanthink.closbotkt.feature.notes
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ryanthink.closbotkt.app.EditNoteRoute
 import com.ryanthink.closbotkt.data.notes.PhotoStorage
 import com.ryanthink.closbotkt.data.notes.WineNote
 import com.ryanthink.closbotkt.data.notes.WineNoteRepository
@@ -24,7 +25,8 @@ constructor(
     private val photoStorage: PhotoStorage,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    private val noteId: Long = checkNotNull(savedStateHandle[NOTE_ID])
+    private val noteId: Long = checkNotNull(savedStateHandle.get<Long>(EditNoteRoute::noteId.name))
+
     private var note: WineNote? = null
 
     private val _uiState = MutableStateFlow<EditNoteUiState>(EditNoteUiState.Loading)
@@ -102,9 +104,5 @@ constructor(
 
     private fun editing(change: (EditNoteUiState.Editing) -> EditNoteUiState.Editing) = _uiState.update { state ->
         if (state is EditNoteUiState.Editing) change(state) else state
-    }
-
-    private companion object {
-        const val NOTE_ID = "noteId"
     }
 }

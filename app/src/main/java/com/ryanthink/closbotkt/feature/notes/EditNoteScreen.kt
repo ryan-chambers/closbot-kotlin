@@ -36,7 +36,6 @@ import java.io.File
 
 @Composable
 fun EditNoteScreen(
-    noteId: Long,
     onDone: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: EditNoteViewModel = hiltViewModel(),

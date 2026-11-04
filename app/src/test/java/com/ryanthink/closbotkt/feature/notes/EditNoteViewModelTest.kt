@@ -2,6 +2,7 @@ package com.ryanthink.closbotkt.feature.notes
 
 import androidx.lifecycle.SavedStateHandle
 import com.ryanthink.closbotkt.MainDispatcherRule
+import com.ryanthink.closbotkt.app.EditNoteRoute
 import com.ryanthink.closbotkt.data.notes.FakeWineNoteRepository
 import com.ryanthink.closbotkt.data.notes.NewWineNote
 import com.ryanthink.closbotkt.data.notes.PhotoStorage
@@ -45,7 +46,11 @@ class EditNoteViewModelTest {
     ): Long = repository.addNote(NewWineNote(photo, details, labels))
 
     private fun viewModelFor(noteId: Long, repository: WineNoteRepository = this.repository) =
-        EditNoteViewModel(repository, PhotoStorage(File("photos")), SavedStateHandle(mapOf("noteId" to noteId)))
+        EditNoteViewModel(
+            repository,
+            PhotoStorage(File("photos")),
+            SavedStateHandle(mapOf(EditNoteRoute::noteId.name to noteId)),
+        )
 
     private fun EditNoteViewModel.editing() = uiState.value as EditNoteUiState.Editing
 
