@@ -29,12 +29,17 @@ class PineconeKnowledgeBase(private val embedder: Embedder, private val api: Pin
 
         val (personalNotes, otherContext) = pcContext.partition { it.source.uppercase() == myNotesUppercase }
         return WineContext(
-            personalNotes = personalNotes.map { it -> toTagResult(it) },
-            otherContext = otherContext.map { it -> toTagResult(it) },
+            personalNotes = personalNotes.map { toRagResult(it) },
+            otherContext = otherContext.map { toRagResultWithSource(it) },
         )
     }
 
     private fun toRagResult(p: PineconeWineContext): RagQueryResult {
         return RagQueryResult(score = p.score, content = p.info)
+    }
+
+    // Other context says where it came from; personal notes are the user's own, so they do not.
+    private fun toRagResultWithSource(p: PineconeWineContext): RagQueryResult {
+        return RagQueryResult(score = p.score, content = "${p.info} (Source: ${p.source})")
     }
 }

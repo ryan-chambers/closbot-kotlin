@@ -3,6 +3,8 @@ package com.ryanthink.closbotkt.data.knowledge
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeApi
 import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeAuthInterceptor
+import com.ryanthink.closbotkt.data.knowledge.pinecone.RagQueryResult
+import com.ryanthink.closbotkt.data.knowledge.pinecone.WineContext
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
@@ -33,8 +35,8 @@ import retrofit2.Retrofit
  *
  * The contract the tests assume:
  * - `KnowledgeBase.contextFor(query: String): WineContext`
- * - `WineContext(personalNotes: List<RagResult>, otherContext: List<RagResult>)`
- * - `RagResult(content: String, score: Double)`
+ * - `WineContext(personalNotes: List<RagQueryResult>, otherContext: List<RagQueryResult>)`
+ * - `RagQueryResult(content: String, score: Float)`
  * - `PineconeKnowledgeBase(embedder: Embedder, api: PineconeApi)`
  * - `PineconeAuthInterceptor(apiKey: String)`, `PineconeApi` with a `POST query` call (the base URL is the index host)
  */
@@ -118,10 +120,10 @@ class PineconeKnowledgeBaseTest {
 
         val context = knowledge.contextFor("Chablis")
 
-        assertEquals(listOf(RagResult(content = "Loved the minerality", score = 0.75)), context.personalNotes)
+        assertEquals(listOf(RagQueryResult(content = "Loved the minerality", score = 0.75f)), context.personalNotes)
         // Other context says where it came from; personal notes are the user's own, so they do not.
         assertEquals(
-            listOf(RagResult(content = "Chablis is steely (Source: Wine Folly)", score = 0.5)),
+            listOf(RagQueryResult(content = "Chablis is steely (Source: Wine Folly)", score = 0.5f)),
             context.otherContext,
         )
     }
@@ -133,7 +135,7 @@ class PineconeKnowledgeBaseTest {
         val context = knowledge.contextFor("Chablis")
 
         assertEquals(listOf("Loved it", "Tart"), context.personalNotes.map { it.content })
-        assertEquals(emptyList<RagResult>(), context.otherContext)
+        assertEquals(emptyList<RagQueryResult>(), context.otherContext)
     }
 
     @Test
