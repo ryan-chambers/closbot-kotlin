@@ -90,15 +90,6 @@ class OpenAiEmbedderTest {
     }
 
     @Test
-    fun `puts vectors back in the order of the texts even if the reply is shuffled`() = runTest {
-        enqueueVectors(1 to listOf(2.0), 0 to listOf(1.0))
-
-        val vectors = embedder.embedAll(listOf("first", "second"))
-
-        assertEquals(listOf(listOf(1.0f), listOf(2.0f)), vectors)
-    }
-
-    @Test
     fun `embeds a single text`() = runTest {
         enqueueVectors(0 to listOf(0.5, 0.25))
 

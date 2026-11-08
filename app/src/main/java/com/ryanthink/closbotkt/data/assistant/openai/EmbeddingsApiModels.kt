@@ -3,7 +3,7 @@ package com.ryanthink.closbotkt.data.assistant.openai
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class EmbeddingsApiRequest (
+data class EmbeddingsApiRequest(
     val model: String,
     val input: List<String> = emptyList(),
 )
@@ -13,7 +13,5 @@ data class Embedding(
     val embedding: List<Float> = emptyList(),
     val index: Int,
 )
-@Serializable
-data class EmbeddingsApiResponse (
-    val data: List<Embedding> = emptyList(),
-)
+
+@Serializable data class EmbeddingsApiResponse(val data: List<Embedding> = emptyList())
