@@ -22,10 +22,12 @@ class PineconeKnowledgeBase(private val embedder: Embedder, private val api: Pin
             response.matches.partition { it.metadata.source.equals(PERSONAL_SOURCE, ignoreCase = true) }
         return WineContext(
             personalNotes = personalNotes.map { RagQueryResult(score = it.score, content = it.metadata.chunk) },
-            // Other context says where it came from; personal notes are the user's own, so they do not.
+            // Other context says where it came from, when it knows; personal notes are the user's own, so they do not.
             otherContext =
                 otherContext.map {
-                    RagQueryResult(score = it.score, content = "${it.metadata.chunk} (Source: ${it.metadata.source})")
+                    val source = it.metadata.source
+                    val content = if (source == null) it.metadata.chunk else "${it.metadata.chunk} (Source: $source)"
+                    RagQueryResult(score = it.score, content = content)
                 },
         )
     }

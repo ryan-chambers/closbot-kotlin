@@ -12,7 +12,7 @@ data class QueryApiRequest(
 @Serializable
 data class Metadata(
     val chunk: String,
-    val source: String,
+    val source: String? = null,
 )
 
 @Serializable

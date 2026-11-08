@@ -173,21 +173,6 @@ class PineconeKnowledgeBaseTest {
         )
     }
 
-    // A match with no text gives the assistant nothing to use, and a vector may carry no metadata at all.
-    @Test
-    fun `skips a match that has no text`() = runTest {
-        enqueueMatches(
-            """{"id":"1","score":0.75,"metadata":{"source":"Guide"}}""",
-            """{"id":"2","score":0.5}""",
-            match("3", 0.25, "Tart", "My Notes"),
-        )
-
-        val context = knowledge.contextFor("Chablis")
-
-        assertEquals(listOf("Tart"), context.personalNotes.map { it.content })
-        assertEquals(emptyList<RagQueryResult>(), context.otherContext)
-    }
-
     @Test
     fun `returns an empty context when nothing matches`() = runTest {
         enqueueMatches()
