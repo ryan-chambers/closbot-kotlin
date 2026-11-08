@@ -3,7 +3,7 @@ package com.ryanthink.closbotkt.data.knowledge
 import com.ryanthink.closbotkt.data.assistant.openai.EmbeddingsApiRequest
 import com.ryanthink.closbotkt.data.assistant.openai.OpenAiApi
 
-class OpenAiEmbedder(val api: OpenAiApi) : Embedder {
+class OpenAiEmbedder(private val api: OpenAiApi) : Embedder {
     override suspend fun embedAll(texts: List<String>): List<List<Float>> {
         if (texts.isEmpty()) {
             return emptyList()
