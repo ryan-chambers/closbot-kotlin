@@ -2,6 +2,7 @@ package com.ryanthink.closbotkt.data.knowledge
 
 import com.ryanthink.closbotkt.data.knowledge.pinecone.KnowledgeBase
 import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeApi
+import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeWineContext
 import com.ryanthink.closbotkt.data.knowledge.pinecone.QueryApiRequest
 import com.ryanthink.closbotkt.data.knowledge.pinecone.WineContext
 
@@ -16,8 +17,10 @@ class PineconeKnowledgeBase(private val embedder: Embedder, private val api: Pin
                     includeMetadata = true,
                 )
             )
-        return response.matches.map { it ->
-            WineContext(score = it.score, source = it.metadata.source, info = it.metadata.chunk)
+        val pcContext =  response.matches.map { it ->
+            PineconeWineContext(score = it.score, source = it.metadata.source, info = it.metadata.chunk)
         }
+
+        return emptyList()
     }
 }
