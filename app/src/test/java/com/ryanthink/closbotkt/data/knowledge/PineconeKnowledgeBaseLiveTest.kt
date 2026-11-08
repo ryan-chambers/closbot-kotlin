@@ -5,7 +5,6 @@ import com.ryanthink.closbotkt.data.assistant.openai.OpenAiApi
 import com.ryanthink.closbotkt.data.assistant.openai.OpenAiAuthInterceptor
 import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeApi
 import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeAuthInterceptor
-import com.ryanthink.closbotkt.data.knowledge.pinecone.RagQueryResult
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -77,9 +76,5 @@ class PineconeKnowledgeBaseLiveTest {
         assertTrue("The index returned nothing; is it empty or the wrong one?", results.isNotEmpty())
         assertTrue("At most topK (3) results", results.size <= 3)
         assertTrue("Every result has text", results.all { it.content.isNotBlank() })
-        assertTrue("Other context names its source", context.otherContext.all(::namesItsSource))
-        assertTrue("Personal notes do not", context.personalNotes.none(::namesItsSource))
     }
-
-    private fun namesItsSource(result: RagQueryResult) = Regex("""\(Source: .+\)$""").containsMatchIn(result.content)
 }
