@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class QueryApiRequest(
-    val vector: List<Float> = emptyList(),
+    val vector: List<Float>,
     val topK: Int,
     val includeMetadata: Boolean,
 ) {}

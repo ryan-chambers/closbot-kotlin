@@ -2,15 +2,11 @@ package com.ryanthink.closbotkt.data.knowledge
 
 import com.ryanthink.closbotkt.data.knowledge.pinecone.KnowledgeBase
 import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeApi
-import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeWineContext
 import com.ryanthink.closbotkt.data.knowledge.pinecone.QueryApiRequest
 import com.ryanthink.closbotkt.data.knowledge.pinecone.RagQueryResult
 import com.ryanthink.closbotkt.data.knowledge.pinecone.WineContext
 
 class PineconeKnowledgeBase(private val embedder: Embedder, private val api: PineconeApi) : KnowledgeBase {
-
-    private val myNotes: String = "My Notes"
-    private val myNotesUppercase = myNotes.uppercase()
 
     override suspend fun contextFor(query: String): WineContext {
         val embeddings = embedder.embed(query)
@@ -22,24 +18,20 @@ class PineconeKnowledgeBase(private val embedder: Embedder, private val api: Pin
                     includeMetadata = true,
                 )
             )
-        val pcContext =
-            response.matches.map {
-                PineconeWineContext(score = it.score, source = it.metadata.source, info = it.metadata.chunk)
-            }
-
-        val (personalNotes, otherContext) = pcContext.partition { it.source.uppercase() == myNotesUppercase }
+        val (personalNotes, otherContext) =
+            response.matches.partition { it.metadata.source.equals(PERSONAL_SOURCE, ignoreCase = true) }
         return WineContext(
-            personalNotes = personalNotes.map { toRagResult(it) },
-            otherContext = otherContext.map { toRagResultWithSource(it) },
+            personalNotes = personalNotes.map { RagQueryResult(score = it.score, content = it.metadata.chunk) },
+            // Other context says where it came from; personal notes are the user's own, so they do not.
+            otherContext =
+                otherContext.map {
+                    RagQueryResult(score = it.score, content = "${it.metadata.chunk} (Source: ${it.metadata.source})")
+                },
         )
     }
 
-    private fun toRagResult(p: PineconeWineContext): RagQueryResult {
-        return RagQueryResult(score = p.score, content = p.info)
-    }
-
-    // Other context says where it came from; personal notes are the user's own, so they do not.
-    private fun toRagResultWithSource(p: PineconeWineContext): RagQueryResult {
-        return RagQueryResult(score = p.score, content = "${p.info} (Source: ${p.source})")
+    private companion object {
+        /** The `source` metadata that marks a vector as one of the user's own notes. */
+        const val PERSONAL_SOURCE = "My Notes"
     }
 }
