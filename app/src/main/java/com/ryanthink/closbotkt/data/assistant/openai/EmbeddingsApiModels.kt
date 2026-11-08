@@ -11,7 +11,7 @@ data class EmbeddingsApiRequest (
 @Serializable
 data class Embedding(
     val embedding: List<Float> = emptyList(),
-    val index: Integer,
+    val index: Int,
 )
 @Serializable
 data class EmbeddingsApiResponse (
