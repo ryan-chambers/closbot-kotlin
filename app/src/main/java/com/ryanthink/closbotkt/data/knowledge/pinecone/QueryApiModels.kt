@@ -9,8 +9,19 @@ data class QueryApiRequest (
 {}
 
 @Serializable
-data class QueryApiResponse (
-    val score: Float,
+data class Metadata(
+    val chunk: String,
     val source: String,
-    val info: String,
+)
+
+@Serializable
+data class Match(
+    val id: String,
+    val score: Float,
+    val metadata: Metadata
+)
+
+@Serializable
+data class QueryApiResponse (
+    val matches: List<Match> = emptyList(),
 )
