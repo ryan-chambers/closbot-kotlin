@@ -156,6 +156,38 @@ class PineconeKnowledgeBaseTest {
         )
     }
 
+    // Found by the live test: some vectors in the real index have no "source".
+    @Test
+    fun `keeps a match with no source as other context without naming one`() = runTest {
+        enqueueMatches(
+            """{"id":"1","score":0.75,"metadata":{"chunk":"Steely"}}""",
+            """{"id":"2","score":0.5,"metadata":{"chunk":"Tart","source":null}}""",
+        )
+
+        val context = knowledge.contextFor("Chablis")
+
+        assertEquals(emptyList<RagQueryResult>(), context.personalNotes)
+        assertEquals(
+            listOf(RagQueryResult(content = "Steely", score = 0.75f), RagQueryResult(content = "Tart", score = 0.5f)),
+            context.otherContext,
+        )
+    }
+
+    // A match with no text gives the assistant nothing to use, and a vector may carry no metadata at all.
+    @Test
+    fun `skips a match that has no text`() = runTest {
+        enqueueMatches(
+            """{"id":"1","score":0.75,"metadata":{"source":"Guide"}}""",
+            """{"id":"2","score":0.5}""",
+            match("3", 0.25, "Tart", "My Notes"),
+        )
+
+        val context = knowledge.contextFor("Chablis")
+
+        assertEquals(listOf("Tart"), context.personalNotes.map { it.content })
+        assertEquals(emptyList<RagQueryResult>(), context.otherContext)
+    }
+
     @Test
     fun `returns an empty context when nothing matches`() = runTest {
         enqueueMatches()
