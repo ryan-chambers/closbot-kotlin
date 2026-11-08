@@ -2,11 +2,7 @@ package com.ryanthink.closbotkt.data.knowledge.pinecone
 
 import kotlinx.serialization.Serializable
 
-@Serializable
-data class QueryApiRequest (
-    val embeddings: List<Float> = emptyList(),
-)
-{}
+@Serializable data class QueryApiRequest(val embeddings: List<Float> = emptyList()) {}
 
 @Serializable
 data class Metadata(
@@ -18,10 +14,7 @@ data class Metadata(
 data class Match(
     val id: String,
     val score: Float,
-    val metadata: Metadata
+    val metadata: Metadata,
 )
 
-@Serializable
-data class QueryApiResponse (
-    val matches: List<Match> = emptyList(),
-)
+@Serializable data class QueryApiResponse(val matches: List<Match> = emptyList())
