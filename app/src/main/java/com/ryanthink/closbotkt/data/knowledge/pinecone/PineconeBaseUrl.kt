@@ -6,8 +6,10 @@ fun pineconeBaseUrl(host: String): String {
     }
 
     var baseUrl = host.trim()
-    if (!baseUrl.startsWith("https://", true)) {
-        baseUrl = "https://$baseUrl"
+    if (!baseUrl.startsWith("http://", true)) {
+        if (!baseUrl.startsWith("https://", true)) {
+            baseUrl = "https://$baseUrl"
+        }
     }
     return baseUrl.trim().trimEnd('/') + "/"
 }
