@@ -5,8 +5,9 @@ import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeApi
 import com.ryanthink.closbotkt.data.knowledge.pinecone.QueryApiRequest
 import com.ryanthink.closbotkt.data.knowledge.pinecone.RagQueryResult
 import com.ryanthink.closbotkt.data.knowledge.pinecone.WineContext
+import javax.inject.Inject
 
-class PineconeKnowledgeBase(private val embedder: Embedder, private val api: PineconeApi) : KnowledgeBase {
+class PineconeKnowledgeBase @Inject constructor(private val embedder: Embedder, private val api: PineconeApi) : KnowledgeBase {
 
     override suspend fun contextFor(query: String): WineContext {
         val embeddings = embedder.embed(query)
