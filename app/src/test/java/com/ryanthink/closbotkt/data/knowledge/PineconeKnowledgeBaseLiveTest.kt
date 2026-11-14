@@ -5,6 +5,7 @@ import com.ryanthink.closbotkt.data.assistant.openai.OpenAiApi
 import com.ryanthink.closbotkt.data.assistant.openai.OpenAiAuthInterceptor
 import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeApi
 import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeAuthInterceptor
+import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeKnowledgeBase
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -16,7 +17,7 @@ import org.junit.Test
 import retrofit2.Retrofit
 
 /**
- * Checks [PineconeKnowledgeBase] against the real OpenAI and Pinecone services.
+ * Checks [com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeKnowledgeBase] against the real OpenAI and Pinecone services.
  *
  * The other tests use a response shape copied from the old app. This one shows the real index agrees with it: the
  * embedding model matches the index, and real matches parse into notes and other context.

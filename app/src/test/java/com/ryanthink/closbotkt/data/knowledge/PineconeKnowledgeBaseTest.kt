@@ -3,6 +3,7 @@ package com.ryanthink.closbotkt.data.knowledge
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeApi
 import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeAuthInterceptor
+import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeKnowledgeBase
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
@@ -26,7 +27,7 @@ import retrofit2.HttpException
 import retrofit2.Retrofit
 
 /**
- * Specifies [PineconeKnowledgeBase]: find what the cellar already knows about a question.
+ * Specifies [com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeKnowledgeBase]: find what the cellar already knows about a question.
  *
  * Pinecone holds two kinds of text in one index: the user's own tasting notes (source "My Notes") and reference
  * material from elsewhere. The assistant treats them differently, so the lookup splits them apart.
