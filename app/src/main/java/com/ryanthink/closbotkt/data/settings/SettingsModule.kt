@@ -18,16 +18,19 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class SettingsModule {
-    private val userPrefName = "user_preferences"
 
-    @Provides
-    @Singleton
-    fun providePreferencesDataStore(@ApplicationContext appContext: Context): DataStore<Preferences> {
-        return PreferenceDataStoreFactory.create(
-            corruptionHandler = ReplaceFileCorruptionHandler(produceNewData = { emptyPreferences() }),
-            produceFile = { appContext.preferencesDataStoreFile(userPrefName) },
-        )
+    companion object {
+        private const val USER_PREFS = "user_preferences"
+
+        @Provides
+        @Singleton
+        fun providePreferencesDataStore(@ApplicationContext appContext: Context): DataStore<Preferences> {
+            return PreferenceDataStoreFactory.create(
+                corruptionHandler = ReplaceFileCorruptionHandler(produceNewData = { emptyPreferences() }),
+                produceFile = { appContext.preferencesDataStoreFile(USER_PREFS) },
+            )
+        }
     }
 
-    @Binds abstract fun bindDataStoreSettingsRepository(): DataStoreSettingsRepository
+    @Binds abstract fun bindDataStoreSettingsRepository(impl: DataStoreSettingsRepository): DataStoreSettingsRepository
 }

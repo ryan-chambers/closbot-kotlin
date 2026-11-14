@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.map
 class DataStoreSettingsRepository @Inject constructor(private val dataStore: DataStore<Preferences>) :
     SettingsRepository {
 
-    val burgundyFocusKey = booleanPreferencesKey("burgundyFocus")
+    private val burgundyFocusKey = booleanPreferencesKey("burgundyFocus")
 
     override val burgundyFocus: Flow<Boolean>
         get() = dataStore.data.map { preferences -> preferences[burgundyFocusKey] ?: true }
