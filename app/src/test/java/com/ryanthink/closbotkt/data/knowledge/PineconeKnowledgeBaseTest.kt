@@ -3,8 +3,7 @@ package com.ryanthink.closbotkt.data.knowledge
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeApi
 import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeAuthInterceptor
-import com.ryanthink.closbotkt.data.knowledge.pinecone.RagQueryResult
-import com.ryanthink.closbotkt.data.knowledge.pinecone.WineContext
+import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeKnowledgeBase
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json

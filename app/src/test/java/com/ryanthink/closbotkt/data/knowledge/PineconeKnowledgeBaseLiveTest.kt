@@ -5,6 +5,8 @@ import com.ryanthink.closbotkt.data.assistant.openai.OpenAiApi
 import com.ryanthink.closbotkt.data.assistant.openai.OpenAiAuthInterceptor
 import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeApi
 import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeAuthInterceptor
+import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeKnowledgeBase
+import com.ryanthink.closbotkt.data.knowledge.pinecone.pineconeBaseUrl
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -55,7 +57,7 @@ class PineconeKnowledgeBaseLiveTest {
         val pinecone =
             Retrofit.Builder()
                 // Retrofit insists that the base URL ends in a slash; the host is usually copied without one.
-                .baseUrl(pineconeHost.trimEnd('/') + "/")
+                .baseUrl(pineconeBaseUrl(pineconeHost))
                 .client(OkHttpClient.Builder().addInterceptor(PineconeAuthInterceptor(pineconeKey)).build())
                 .addConverterFactory(converter)
                 .build()

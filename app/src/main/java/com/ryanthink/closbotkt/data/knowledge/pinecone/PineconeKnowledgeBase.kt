@@ -1,12 +1,13 @@
-package com.ryanthink.closbotkt.data.knowledge
+package com.ryanthink.closbotkt.data.knowledge.pinecone
 
-import com.ryanthink.closbotkt.data.knowledge.pinecone.KnowledgeBase
-import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeApi
-import com.ryanthink.closbotkt.data.knowledge.pinecone.QueryApiRequest
-import com.ryanthink.closbotkt.data.knowledge.pinecone.RagQueryResult
-import com.ryanthink.closbotkt.data.knowledge.pinecone.WineContext
+import com.ryanthink.closbotkt.data.knowledge.Embedder
+import com.ryanthink.closbotkt.data.knowledge.KnowledgeBase
+import com.ryanthink.closbotkt.data.knowledge.RagQueryResult
+import com.ryanthink.closbotkt.data.knowledge.WineContext
+import javax.inject.Inject
 
-class PineconeKnowledgeBase(private val embedder: Embedder, private val api: PineconeApi) : KnowledgeBase {
+class PineconeKnowledgeBase @Inject constructor(private val embedder: Embedder, private val api: PineconeApi) :
+    KnowledgeBase {
 
     override suspend fun contextFor(query: String): WineContext {
         val embeddings = embedder.embed(query)
@@ -26,7 +27,7 @@ class PineconeKnowledgeBase(private val embedder: Embedder, private val api: Pin
             otherContext =
                 otherContext.map {
                     val source = it.metadata.source
-                    val content = if (source == null) "(no source)" else "${it.metadata.chunk} (Source: $source)"
+                    val content = if (source == null) it.metadata.chunk else "${it.metadata.chunk} (Source: $source)"
                     RagQueryResult(score = it.score, content = content)
                 },
         )

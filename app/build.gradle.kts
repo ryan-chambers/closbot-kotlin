@@ -9,17 +9,15 @@ plugins {
 }
 
 // Secrets live in local.properties (gitignored) so they never reach source control. CI or other
-// machines without a local.properties entry can set the OPENAI_API_KEY environment variable
-// instead; either way, a missing key falls back to an empty string rather than failing the build,
-// since most of the app doesn't need it yet.
-val openAiApiKey: String = run {
-    val localProperties = Properties()
-    val localPropertiesFile = rootProject.file("local.properties")
-    if (localPropertiesFile.exists()) {
-        localPropertiesFile.inputStream().use { localProperties.load(it) }
+// machines can set an environment variable of the same name instead. A missing secret falls back
+// to an empty string rather than failing the build, since most of the app doesn't need it yet.
+val localProperties =
+    Properties().apply {
+        val file = rootProject.file("local.properties")
+        if (file.exists()) file.inputStream().use { load(it) }
     }
-    localProperties.getProperty("OPENAI_API_KEY") ?: System.getenv("OPENAI_API_KEY") ?: ""
-}
+
+fun secret(name: String): String = (localProperties.getProperty(name) ?: System.getenv(name) ?: "").trim()
 
 android {
     namespace = "com.ryanthink.closbotkt"
@@ -34,7 +32,9 @@ android {
 
         testInstrumentationRunner = "com.ryanthink.closbotkt.HiltTestRunner"
 
-        buildConfigField("String", "OPENAI_API_KEY", "\"$openAiApiKey\"")
+        buildConfigField("String", "OPENAI_API_KEY", "\"${secret("OPENAI_API_KEY")}\"")
+        buildConfigField("String", "PINECONE_API_KEY", "\"${secret("PINECONE_API_KEY")}\"")
+        buildConfigField("String", "PINECONE_HOST", "\"${secret("PINECONE_HOST")}\"")
     }
 
     // demo binds a canned, offline WineAssistantRepository; prod binds the real OpenAI-backed one.

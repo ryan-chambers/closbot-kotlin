@@ -1,4 +1,4 @@
-package com.ryanthink.closbotkt.data.knowledge.pinecone
+package com.ryanthink.closbotkt.data.knowledge
 
 data class RagQueryResult(
     val score: Float,
