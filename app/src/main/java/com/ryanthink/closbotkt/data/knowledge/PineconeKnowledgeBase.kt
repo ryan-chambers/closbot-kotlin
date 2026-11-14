@@ -1,6 +1,5 @@
 package com.ryanthink.closbotkt.data.knowledge
 
-import com.ryanthink.closbotkt.data.knowledge.pinecone.KnowledgeBase
 import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeApi
 import com.ryanthink.closbotkt.data.knowledge.pinecone.QueryApiRequest
 import com.ryanthink.closbotkt.data.knowledge.pinecone.RagQueryResult
