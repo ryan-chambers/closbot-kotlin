@@ -21,7 +21,9 @@ object PineconeNetworkModule {
     @Singleton
     fun providePineconeApi(): PineconeApi {
         val client =
-            OkHttpClient.Builder().addInterceptor(PineconeAuthInterceptor(apiKey = BuildConfig.PINECONE_API_KEY)).build()
+            OkHttpClient.Builder()
+                .addInterceptor(PineconeAuthInterceptor(apiKey = BuildConfig.PINECONE_API_KEY))
+                .build()
         val json = Json { ignoreUnknownKeys = true }
         return Retrofit.Builder()
             .baseUrl(BuildConfig.PINECONE_HOST)
