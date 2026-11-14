@@ -32,5 +32,5 @@ abstract class SettingsModule {
         }
     }
 
-    @Binds abstract fun bindDataStoreSettingsRepository(impl: DataStoreSettingsRepository): DataStoreSettingsRepository
+    @Binds abstract fun bindSettingsRepository(impl: DataStoreSettingsRepository): SettingsRepository
 }
