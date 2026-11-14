@@ -10,5 +10,4 @@ import dagger.hilt.components.SingletonComponent
 abstract class KnowledgeModule {
 
     @Binds abstract fun bindKnowledgeBase(impl: FakeKnowledgeBase): KnowledgeBase
-
 }
