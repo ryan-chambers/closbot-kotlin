@@ -5,19 +5,23 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -40,7 +45,12 @@ fun ChatScreen(
     viewModel: ChatViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    ChatContent(state = state, onSendMessage = viewModel::onSendMessage, modifier = modifier)
+    ChatContent(
+        state = state,
+        onSendMessage = viewModel::onSendMessage,
+        onBurgundyFocusChange = viewModel::onBurgundyFocusChange,
+        modifier = modifier,
+    )
 }
 
 /** Stateless chat UI: renders [state] and reports the user's intent through [onSendMessage]. */
@@ -48,6 +58,7 @@ fun ChatScreen(
 fun ChatContent(
     state: ChatUiState,
     onSendMessage: (String) -> Unit,
+    onBurgundyFocusChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     // The draft is UI element state, not screen state, so it stays here rather than in the ViewModel.
@@ -59,6 +70,21 @@ fun ChatContent(
     LaunchedEffect(lastIndex) { listState.animateScrollToItem(lastIndex) }
 
     Column(modifier = modifier.fillMaxSize().imePadding()) {
+        Row(
+            modifier =
+                Modifier.fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .toggleable(value = state.burgundyFocus, role = Role.Switch, onValueChange = onBurgundyFocusChange),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(stringResource(R.string.chat_burgundy_focus))
+            Spacer(Modifier.width(8.dp))
+            // The row above handles the click, so this only displays the state; a second handler would make two
+            // toggles.
+            Switch(checked = state.burgundyFocus, onCheckedChange = null)
+        }
+
         LazyColumn(
             state = listState,
             modifier = Modifier.weight(1f).fillMaxWidth(),

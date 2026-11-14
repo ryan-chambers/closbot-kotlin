@@ -11,4 +11,6 @@ data class ChatUiState(
     val messages: List<ChatMessage> = emptyList(),
     val isWaiting: Boolean = false,
     val hasError: Boolean = false,
+    /** Mirrors the stored setting, so the switch on screen always shows what the assistant will do. */
+    val burgundyFocus: Boolean = true,
 )

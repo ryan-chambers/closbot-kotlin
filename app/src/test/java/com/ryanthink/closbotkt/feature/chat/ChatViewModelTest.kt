@@ -3,12 +3,16 @@ package com.ryanthink.closbotkt.feature.chat
 import app.cash.turbine.test
 import com.ryanthink.closbotkt.MainDispatcherRule
 import com.ryanthink.closbotkt.data.assistant.WineAssistantRepository
+import com.ryanthink.closbotkt.data.settings.FakeSettingsRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -27,7 +31,15 @@ class ChatViewModelTest {
     }
 
     private val repository = ControlledRepository()
-    private val viewModel = ChatViewModel(repository)
+    private val settings = FakeSettingsRepository()
+    private lateinit var viewModel: ChatViewModel
+
+    // Built here rather than in a field initializer: JUnit creates the test object before the rules run, and a
+    // ViewModel that starts work in init would pick up viewModelScope before MainDispatcherRule has replaced Main.
+    @Before
+    fun setUp() {
+        viewModel = ChatViewModel(repository, settings)
+    }
 
     @Test
     fun `starts with an empty idle state`() {
@@ -137,6 +149,62 @@ class ChatViewModelTest {
 
         val state = viewModel.uiState.value
         assertEquals(false, state.hasError)
+        assertTrue(state.isWaiting)
+    }
+
+    @Test
+    fun `burgundy focus starts on`() {
+        assertTrue(viewModel.uiState.value.burgundyFocus)
+    }
+
+    @Test
+    fun `shows a stored setting of off from the start`() {
+        val viewModel = ChatViewModel(repository, FakeSettingsRepository(burgundyFocus = false))
+
+        assertFalse(viewModel.uiState.value.burgundyFocus)
+    }
+
+    @Test
+    fun `turning burgundy focus off stores it and updates the state`() = runTest {
+        viewModel.onBurgundyFocusChange(false)
+
+        assertFalse(settings.burgundyFocus.first())
+        assertFalse(viewModel.uiState.value.burgundyFocus)
+    }
+
+    @Test
+    fun `turning burgundy focus back on stores it and updates the state`() = runTest {
+        viewModel.onBurgundyFocusChange(false)
+
+        viewModel.onBurgundyFocusChange(true)
+
+        assertTrue(settings.burgundyFocus.first())
+        assertTrue(viewModel.uiState.value.burgundyFocus)
+    }
+
+    @Test
+    fun `follows the setting when it changes somewhere else`() = runTest {
+        viewModel.uiState.test {
+            assertTrue(awaitItem().burgundyFocus)
+
+            settings.setBurgundyFocus(false)
+
+            assertFalse(awaitItem().burgundyFocus)
+        }
+    }
+
+    @Test
+    fun `changing burgundy focus keeps the conversation`() = runTest {
+        viewModel.onSendMessage("Hi")
+        repository.replies.send("Hello!")
+
+        viewModel.onBurgundyFocusChange(false)
+
+        val state = viewModel.uiState.value
+        assertEquals(
+            listOf(ChatMessage("Hi", ChatSender.USER), ChatMessage("Hello!", ChatSender.ASSISTANT)),
+            state.messages,
+        )
         assertTrue(state.isWaiting)
     }
 }

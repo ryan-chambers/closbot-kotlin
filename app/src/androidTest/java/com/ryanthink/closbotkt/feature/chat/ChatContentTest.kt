@@ -3,6 +3,9 @@ package com.ryanthink.closbotkt.feature.chat
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.assertIsOff
+import androidx.compose.ui.test.assertIsOn
+import androidx.compose.ui.test.isToggleable
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -19,12 +22,19 @@ class ChatContentTest {
     @get:Rule val composeRule = createComposeRule()
 
     private val sent = mutableListOf<String>()
+    private val burgundyChanges = mutableListOf<Boolean>()
 
     private fun text(id: Int) = InstrumentationRegistry.getInstrumentation().targetContext.getString(id)
 
     private fun setContent(state: ChatUiState = ChatUiState()) {
         composeRule.setContent {
-            ClosBotTheme { ChatContent(state = state, onSendMessage = { sent += it }) }
+            ClosBotTheme {
+                ChatContent(
+                    state = state,
+                    onSendMessage = { sent += it },
+                    onBurgundyFocusChange = { burgundyChanges += it },
+                )
+            }
         }
     }
 
@@ -86,5 +96,38 @@ class ChatContentTest {
         setContent(ChatUiState(hasError = true))
 
         composeRule.onNodeWithText(text(R.string.chat_error)).assertIsDisplayed()
+    }
+
+    @Test
+    fun showsTheBurgundySwitchOnByDefault() {
+        setContent()
+
+        composeRule.onNodeWithText(text(R.string.chat_burgundy_focus)).assertIsDisplayed()
+        composeRule.onNode(isToggleable()).assertIsOn()
+    }
+
+    @Test
+    fun showsTheBurgundySwitchOffWhenTheSettingIsOff() {
+        setContent(ChatUiState(burgundyFocus = false))
+
+        composeRule.onNode(isToggleable()).assertIsOff()
+    }
+
+    @Test
+    fun turningTheSwitchOffReportsTheChange() {
+        setContent(ChatUiState(burgundyFocus = true))
+
+        composeRule.onNode(isToggleable()).performClick()
+
+        assertEquals(listOf(false), burgundyChanges)
+    }
+
+    @Test
+    fun turningTheSwitchOnReportsTheChange() {
+        setContent(ChatUiState(burgundyFocus = false))
+
+        composeRule.onNode(isToggleable()).performClick()
+
+        assertEquals(listOf(true), burgundyChanges)
     }
 }

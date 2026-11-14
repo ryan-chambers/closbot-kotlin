@@ -3,6 +3,7 @@ package com.ryanthink.closbotkt.feature.chat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ryanthink.closbotkt.data.assistant.WineAssistantRepository
+import com.ryanthink.closbotkt.data.settings.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,10 +14,26 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class ChatViewModel @Inject constructor(private val repository: WineAssistantRepository) : ViewModel() {
+class ChatViewModel
+@Inject
+constructor(private val repository: WineAssistantRepository, private val settings: SettingsRepository) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ChatUiState())
     val uiState: StateFlow<ChatUiState> = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            settings.burgundyFocus.collect { enabled ->
+                _uiState.update { it.copy(burgundyFocus = enabled) }
+            }
+        }
+    }
+
+    fun onBurgundyFocusChange(enabled: Boolean) {
+        viewModelScope.launch {
+            settings.setBurgundyFocus(enabled)
+        }
+    }
 
     fun onSendMessage(text: String) {
         val message = text.trim()

@@ -30,6 +30,7 @@
     <string name="chat_input_hint">Ask about a wine</string>
     <string name="chat_send">Send</string>
     <string name="chat_error">Something went wrong. Please try again.</string>
+    <string name="chat_burgundy_focus">Focus on Burgundy?</string>
 
     <string name="edit_note_no_details">Wine note</string>
     <string name="edit_note_edit_details">Notes</string>
