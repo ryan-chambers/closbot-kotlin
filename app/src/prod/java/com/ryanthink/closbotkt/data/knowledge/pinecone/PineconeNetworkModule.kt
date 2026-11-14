@@ -26,7 +26,7 @@ object PineconeNetworkModule {
                 .build()
         val json = Json { ignoreUnknownKeys = true }
         return Retrofit.Builder()
-            .baseUrl(BuildConfig.PINECONE_HOST)
+            .baseUrl(pineconeBaseUrl(BuildConfig.PINECONE_HOST))
             .client(client)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
