@@ -1,4 +1,4 @@
-package com.ryanthink.closbotkt.data.assistant.openai
+package com.ryanthink.closbotkt.data.knowledge.pinecone
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.ryanthink.closbotkt.BuildConfig
@@ -21,13 +21,13 @@ object PineconeNetworkModule {
     @Singleton
     fun providePineconeApi(): PineconeApi {
         val client =
-            OkHttpClient.Builder().addInterceptor(OpenAiAuthInterceptor(apiKey = BuildConfig.OPENAI_API_KEY)).build()
+            OkHttpClient.Builder().addInterceptor(PineconeAuthInterceptor(apiKey = BuildConfig.PINECONE_API_KEY)).build()
         val json = Json { ignoreUnknownKeys = true }
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BuildConfig.PINECONE_HOST)
             .client(client)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
-            .create(OpenAiApi::class.java)
+            .create(PineconeApi::class.java)
     }
 }
