@@ -2,8 +2,6 @@ package com.ryanthink.closbotkt.data.knowledge
 
 import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeApi
 import com.ryanthink.closbotkt.data.knowledge.pinecone.QueryApiRequest
-import com.ryanthink.closbotkt.data.knowledge.pinecone.RagQueryResult
-import com.ryanthink.closbotkt.data.knowledge.pinecone.WineContext
 import javax.inject.Inject
 
 class PineconeKnowledgeBase @Inject constructor(private val embedder: Embedder, private val api: PineconeApi) :

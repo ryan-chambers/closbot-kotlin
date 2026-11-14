@@ -1,7 +1,5 @@
 package com.ryanthink.closbotkt.data.knowledge
 
-import com.ryanthink.closbotkt.data.knowledge.pinecone.RagQueryResult
-import com.ryanthink.closbotkt.data.knowledge.pinecone.WineContext
 import javax.inject.Inject
 
 class FakeKnowledgeBase @Inject constructor() : KnowledgeBase {
