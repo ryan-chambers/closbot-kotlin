@@ -20,9 +20,19 @@ constructor(private val repository: WineAssistantRepository, private val setting
 
     private val _uiState = MutableStateFlow(ChatUiState())
     val uiState: StateFlow<ChatUiState> = _uiState.asStateFlow()
+    
+    init {
+        viewModelScope.launch {
+            settings.burgundyFocus.collect { enabled ->
+                _uiState.update { it.copy(burgundyFocus = enabled) }
+            }
+        }
+    }
 
     fun onBurgundyFocusChange(enabled: Boolean) {
-        TODO("Store the setting through settings; the UI state should follow it")
+        viewModelScope.launch {
+            settings.setBurgundyFocus(enabled)
+        }
     }
 
     fun onSendMessage(text: String) {
