@@ -27,7 +27,7 @@ import retrofit2.HttpException
 import retrofit2.Retrofit
 
 /**
- * Specifies [com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeKnowledgeBase]: find what the cellar already knows about a question.
+ * Specifies [PineconeKnowledgeBase]: find what the cellar already knows about a question.
  *
  * Pinecone holds two kinds of text in one index: the user's own tasting notes (source "My Notes") and reference
  * material from elsewhere. The assistant treats them differently, so the lookup splits them apart.

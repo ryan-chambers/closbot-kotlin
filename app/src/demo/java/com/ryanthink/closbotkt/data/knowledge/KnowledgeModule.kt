@@ -9,6 +9,5 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class KnowledgeModule {
 
-    @Binds
-    abstract fun bindKnowledgeBase(impl: FakeKnowledgeBase): KnowledgeBase
+    @Binds abstract fun bindKnowledgeBase(impl: FakeKnowledgeBase): KnowledgeBase
 }

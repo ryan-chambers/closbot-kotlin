@@ -18,7 +18,7 @@ import org.junit.Test
 import retrofit2.Retrofit
 
 /**
- * Checks [com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeKnowledgeBase] against the real OpenAI and Pinecone services.
+ * Checks [PineconeKnowledgeBase] against the real OpenAI and Pinecone services.
  *
  * The other tests use a response shape copied from the old app. This one shows the real index agrees with it: the
  * embedding model matches the index, and real matches parse into notes and other context.
