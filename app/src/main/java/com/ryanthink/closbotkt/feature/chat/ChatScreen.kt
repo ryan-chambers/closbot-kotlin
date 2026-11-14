@@ -18,6 +18,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,7 +41,12 @@ fun ChatScreen(
     viewModel: ChatViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    ChatContent(state = state, onSendMessage = viewModel::onSendMessage, modifier = modifier)
+    ChatContent(
+        state = state,
+        onSendMessage = viewModel::onSendMessage,
+        onBurgundyFocusChange = viewModel::onBurgundyFocusChange,
+        modifier = modifier,
+    )
 }
 
 /** Stateless chat UI: renders [state] and reports the user's intent through [onSendMessage]. */
@@ -48,6 +54,7 @@ fun ChatScreen(
 fun ChatContent(
     state: ChatUiState,
     onSendMessage: (String) -> Unit,
+    onBurgundyFocusChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     // The draft is UI element state, not screen state, so it stays here rather than in the ViewModel.
@@ -57,6 +64,13 @@ fun ChatContent(
     // Index of the last row: the greeting, then each message, then the waiting indicator if shown.
     val lastIndex = state.messages.size + if (state.isWaiting) 1 else 0
     LaunchedEffect(lastIndex) { listState.animateScrollToItem(lastIndex) }
+
+    Row() {
+        Switch(
+            checked = state.burgundyFocus,
+            onCheckedChange = onBurgundyFocusChange,
+        )
+    }
 
     Column(modifier = modifier.fillMaxSize().imePadding()) {
         LazyColumn(
