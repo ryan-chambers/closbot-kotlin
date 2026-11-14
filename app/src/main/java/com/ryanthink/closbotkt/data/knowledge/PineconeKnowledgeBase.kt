@@ -25,7 +25,7 @@ class PineconeKnowledgeBase @Inject constructor(private val embedder: Embedder, 
             otherContext =
                 otherContext.map {
                     val source = it.metadata.source
-                    val content = if (source == null) "(no source)" else "${it.metadata.chunk} (Source: $source)"
+                    val content = if (source == null) it.metadata.chunk else "${it.metadata.chunk} (Source: $source)"
                     RagQueryResult(score = it.score, content = content)
                 },
         )
