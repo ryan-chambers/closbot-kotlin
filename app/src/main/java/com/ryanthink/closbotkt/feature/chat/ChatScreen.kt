@@ -80,10 +80,9 @@ fun ChatContent(
         ) {
             Text(stringResource(R.string.chat_burgundy_focus))
             Spacer(Modifier.width(8.dp))
-            Switch(
-                checked = state.burgundyFocus,
-                onCheckedChange = onBurgundyFocusChange,
-            )
+            // The row above handles the click, so this only displays the state; a second handler would make two
+            // toggles.
+            Switch(checked = state.burgundyFocus, onCheckedChange = null)
         }
 
         LazyColumn(
