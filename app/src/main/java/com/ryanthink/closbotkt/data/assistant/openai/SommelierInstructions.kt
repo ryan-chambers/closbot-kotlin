@@ -1,5 +1,6 @@
 package com.ryanthink.closbotkt.data.assistant.openai
 
+import com.ryanthink.closbotkt.data.knowledge.RagQueryResult
 import com.ryanthink.closbotkt.data.knowledge.WineContext
 
 /**
@@ -21,20 +22,22 @@ internal fun sommelierInstructions(burgundyFocus: Boolean, context: WineContext?
     val fromWhere = if (burgundyFocus) " from Burgundy" else ""
     val systemPrompt =
         "You are a sommelier with an expertise in wine $fromWhere. You are acting as my personal assistant. You will help answer any questions or comments about wine. Please return text with only markdown formatting. Please respond in English."
-    var instructions = systemPrompt
-    if (context != null) {
-        if (!context.otherContext.isEmpty()) {
-            val otherContext: String = context.otherContext.map { it.content }.joinToString(".")
-            val otherNote =
-                "'\\n\\nYou have access to some of my additional notes: $otherContext. Make sure to include it if relevant. Also be sure to mention the source.',\n"
-            instructions += otherNote
-        }
-        if (!context.personalNotes.isEmpty()) {
-            val personalNotes: String = context.personalNotes.map { it.content }.joinToString(".")
-            val personalNote =
-                "\\n\\nHere are some of my personal notes. Make use of them if appropriate: $personalNotes"
-            instructions += personalNote
-        }
+
+    return buildString {
+        append(systemPrompt)
+        append(
+            section(context?.otherContext.orEmpty()) { notes ->
+                "\n\nYou have access to some of my additional notes: $notes. Make sure to include it if relevant. Also be sure to mention the source."
+            }
+        )
+        append(
+            section(context?.personalNotes.orEmpty()) { notes ->
+                "\n\nHere are some of my personal notes. Make use of them if appropriate: $notes"
+            }
+        )
     }
-    return instructions
 }
+
+/** The text for one kind of note, or nothing if there are none. [intro] wraps the joined notes in a sentence. */
+private fun section(notes: List<RagQueryResult>, intro: (String) -> String): String =
+    if (notes.isEmpty()) "" else intro(notes.joinToString(".") { it.content })
