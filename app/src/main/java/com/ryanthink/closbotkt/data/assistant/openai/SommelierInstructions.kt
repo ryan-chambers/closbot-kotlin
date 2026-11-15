@@ -23,10 +23,18 @@ internal fun sommelierInstructions(burgundyFocus: Boolean, context: WineContext?
         "You are a sommelier with an expertise in wine $fromWhere. You are acting as my personal assistant. You will help answer any questions or comments about wine. Please return text with only markdown formatting. Please respond in English."
     var instructions = systemPrompt
     if (context != null) {
-        val otherContext: String = context.otherContext.map { it.content }.joinToString(".")
-        val otherNote =
-            "'\\n\\nYou have access to some of my additional notes: $otherContext. Make sure to include it if relevant. Also be sure to mention the source.',\n"
-        instructions += otherNote
+        if (!context.otherContext.isEmpty()) {
+            val otherContext: String = context.otherContext.map { it.content }.joinToString(".")
+            val otherNote =
+                "'\\n\\nYou have access to some of my additional notes: $otherContext. Make sure to include it if relevant. Also be sure to mention the source.',\n"
+            instructions += otherNote
+        }
+        if (!context.personalNotes.isEmpty()) {
+            val personalNotes: String = context.personalNotes.map { it.content }.joinToString(".")
+            val personalNote =
+                "\\n\\nHere are some of my personal notes. Make use of them if appropriate: $personalNotes"
+            instructions += personalNote
+        }
     }
     return instructions
 }
