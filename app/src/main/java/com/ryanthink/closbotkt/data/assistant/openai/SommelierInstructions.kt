@@ -17,5 +17,9 @@ import com.ryanthink.closbotkt.data.knowledge.WineContext
  * A section with nothing to show is left out entirely, so a null [context] and one with two empty lists give the same
  * result. This function does not decide whether to look anything up; it only formats what it is given.
  */
-internal fun sommelierInstructions(burgundyFocus: Boolean, context: WineContext?): String =
-    TODO("Build the instructions as described above")
+internal fun sommelierInstructions(burgundyFocus: Boolean, context: WineContext?): String {
+    val fromWhere = if (burgundyFocus) " from Burgundy" else ""
+    val systemPrompt =
+        "You are a sommelier with an expertise in wine $fromWhere. You are acting as my personal assistant. You will help answer any questions or comments about wine. Please return text with only markdown formatting. Please respond in English. "
+    return systemPrompt
+}
