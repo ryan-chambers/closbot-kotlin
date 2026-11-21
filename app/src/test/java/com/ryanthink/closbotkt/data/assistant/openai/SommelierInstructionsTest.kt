@@ -86,7 +86,8 @@ class SommelierInstructionsTest {
 
     @Test
     fun `separates the base prompt and each kind of context with a blank line`() {
-        val instructions = sommelierInstructions(true, context(personal = listOf("My own note"), other = listOf("A wine fact")))
+        val instructions =
+            sommelierInstructions(true, context(personal = listOf("My own note"), other = listOf("A wine fact")))
 
         val paragraphs = instructions.split("\n\n")
 
@@ -102,7 +103,8 @@ class SommelierInstructionsTest {
 
     @Test
     fun `uses real newlines, not a backslash and an n`() {
-        val instructions = sommelierInstructions(true, context(personal = listOf("My own note"), other = listOf("A wine fact")))
+        val instructions =
+            sommelierInstructions(true, context(personal = listOf("My own note"), other = listOf("A wine fact")))
 
         assertFalse(instructions.contains("\\n"))
     }
