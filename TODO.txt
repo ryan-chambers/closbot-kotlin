@@ -1,5 +1,6 @@
 - create command-line integration test for OpenAI chat integration
 - more experimenting with suspend vs. flow. How similar are they to Promise vs. Observable?
+- how to handle markdown returned by chat response
 
 DONE
 - move code out of ~/Documents
