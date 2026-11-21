@@ -33,13 +33,13 @@ constructor(
     override fun invokeChat(userMessage: String): Flow<String> = flow {
         val trimmedMessage = userMessage.trim()
         val burgundyFocus = settings.burgundyFocus.first()
-        var context: WineContext? = null;
+        var context: WineContext? = null
         if (burgundyFocus && trimmedMessage.length > 10) {
             try {
                 context = knowledge.contextFor(trimmedMessage)
             } catch (e: CancellationException) {
-                throw e;
-            } catch(_: Exception) {
+                throw e
+            } catch (_: Exception) {
                 // TODO log this exception
             }
         }
