@@ -1,21 +1,11 @@
 package com.ryanthink.closbotkt.data.knowledge
 
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import com.ryanthink.closbotkt.data.assistant.openai.OpenAiApi
-import com.ryanthink.closbotkt.data.assistant.openai.OpenAiAuthInterceptor
-import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeApi
-import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeAuthInterceptor
+import com.ryanthink.closbotkt.data.LiveServices
 import com.ryanthink.closbotkt.data.knowledge.pinecone.PineconeKnowledgeBase
-import com.ryanthink.closbotkt.data.knowledge.pinecone.pineconeBaseUrl
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
 import org.junit.Assert.assertTrue
-import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Test
-import retrofit2.Retrofit
 
 /**
  * Checks [PineconeKnowledgeBase] against the real OpenAI and Pinecone services.
@@ -23,10 +13,7 @@ import retrofit2.Retrofit
  * The other tests use a response shape copied from the old app. This one shows the real index agrees with it: the
  * embedding model matches the index, and real matches parse into notes and other context.
  *
- * It needs three environment variables and skips itself when any is missing, so `check` stays green offline:
- * - `OPENAI_API_KEY`
- * - `PINECONE_API_KEY`
- * - `PINECONE_HOST` (the index host, e.g. `https://my-index-abc123.svc.pinecone.io`)
+ * It skips itself when the environment variables listed on [LiveServices] are missing, so `check` stays green offline.
  *
  * Gradle does not treat environment variables as test inputs, so a repeat run reports the task as up to date. Run it
  * with `./gradlew testDemoDebugUnitTest --tests '*PineconeKnowledgeBaseLiveTest' --rerun`. The results are printed to
@@ -38,34 +25,8 @@ class PineconeKnowledgeBaseLiveTest {
 
     @Before
     fun setUp() {
-        val openAiKey = System.getenv("OPENAI_API_KEY")
-        val pineconeKey = System.getenv("PINECONE_API_KEY")
-        val pineconeHost = System.getenv("PINECONE_HOST")
-        assumeTrue(
-            "Set OPENAI_API_KEY, PINECONE_API_KEY and PINECONE_HOST to run",
-            hasValue(openAiKey, pineconeKey, pineconeHost),
-        )
-
-        val converter = Json { ignoreUnknownKeys = true }.asConverterFactory("application/json".toMediaType())
-        val openAi =
-            Retrofit.Builder()
-                .baseUrl("https://api.openai.com/v1/")
-                .client(OkHttpClient.Builder().addInterceptor(OpenAiAuthInterceptor(openAiKey)).build())
-                .addConverterFactory(converter)
-                .build()
-                .create(OpenAiApi::class.java)
-        val pinecone =
-            Retrofit.Builder()
-                // Retrofit insists that the base URL ends in a slash; the host is usually copied without one.
-                .baseUrl(pineconeBaseUrl(pineconeHost))
-                .client(OkHttpClient.Builder().addInterceptor(PineconeAuthInterceptor(pineconeKey)).build())
-                .addConverterFactory(converter)
-                .build()
-                .create(PineconeApi::class.java)
-        knowledge = PineconeKnowledgeBase(OpenAiEmbedder(openAi), pinecone)
+        knowledge = LiveServices.fromEnvironmentOrSkip().knowledge
     }
-
-    private fun hasValue(vararg values: String?) = values.all { !it.isNullOrBlank() }
 
     @Test
     fun `finds context in the real index`() = runBlocking {
