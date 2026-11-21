@@ -2,10 +2,13 @@ package com.ryanthink.closbotkt.data.assistant.openai
 
 import com.ryanthink.closbotkt.data.assistant.WineAssistantRepository
 import com.ryanthink.closbotkt.data.knowledge.KnowledgeBase
+import com.ryanthink.closbotkt.data.knowledge.WineContext
 import com.ryanthink.closbotkt.data.settings.SettingsRepository
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 
 /**
@@ -15,11 +18,6 @@ import kotlinx.coroutines.flow.flow
  *
  * [Singleton] because [previousResponseId] is this app's one conversation's state; a fresh instance per injection would
  * silently drop it and start a new conversation with OpenAI on every screen recreation.
- *
- * TODO(rag-in-chat): before each request, when [SettingsRepository.burgundyFocus] is on and the trimmed message is
- *   longer than 10 characters, ask [knowledge] for context about the message and build the instructions with
- *   [sommelierInstructions]. If the lookup fails, send the message without context instead of failing the chat, but
- *   never swallow a CancellationException. See OpenAiWineAssistantRepositoryTest for the exact behaviour.
  */
 @Singleton
 class OpenAiWineAssistantRepository
@@ -33,12 +31,27 @@ constructor(
     private var previousResponseId: String? = null
 
     override fun invokeChat(userMessage: String): Flow<String> = flow {
+        val trimmedMessage = userMessage.trim()
+        val burgundyFocus = settings.burgundyFocus.first()
+        var context: WineContext? = null;
+        if (burgundyFocus && trimmedMessage.length > 10) {
+            try {
+                context = knowledge.contextFor(trimmedMessage)
+            } catch (e: CancellationException) {
+                throw e;
+            } catch(_: Exception) {
+                // TODO log this exception
+            }
+        }
+
+        val instructions = sommelierInstructions(burgundyFocus, context)
+
         val response =
             api.createResponse(
                 ResponsesApiRequest(
                     model = MODEL,
-                    instructions = SOMMELIER_INSTRUCTIONS,
-                    input = userMessage,
+                    instructions = instructions,
+                    input = trimmedMessage,
                     previousResponseId = previousResponseId,
                 )
             )
@@ -48,8 +61,5 @@ constructor(
 
     private companion object {
         const val MODEL = "gpt-4o-mini"
-        const val SOMMELIER_INSTRUCTIONS =
-            "You are a knowledgeable, friendly sommelier helping the user with wine pairing, " +
-                "tasting notes, and recommendations. Keep replies concise."
     }
 }
