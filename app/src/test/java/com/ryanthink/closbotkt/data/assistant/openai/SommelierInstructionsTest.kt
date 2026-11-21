@@ -85,6 +85,29 @@ class SommelierInstructionsTest {
     }
 
     @Test
+    fun `separates the base prompt and each kind of context with a blank line`() {
+        val instructions = sommelierInstructions(true, context(personal = listOf("My own note"), other = listOf("A wine fact")))
+
+        val paragraphs = instructions.split("\n\n")
+
+        assertEquals(3, paragraphs.size)
+        assertTrue(paragraphs[1].contains("A wine fact"))
+        assertTrue(paragraphs[2].contains("My own note"))
+    }
+
+    @Test
+    fun `has no blank lines when there is no context`() {
+        assertFalse(sommelierInstructions(true, context = null).contains("\n\n"))
+    }
+
+    @Test
+    fun `uses real newlines, not a backslash and an n`() {
+        val instructions = sommelierInstructions(true, context(personal = listOf("My own note"), other = listOf("A wine fact")))
+
+        assertFalse(instructions.contains("\\n"))
+    }
+
+    @Test
     fun `puts the context after the base prompt`() {
         val withContext = sommelierInstructions(true, context(personal = listOf("a note")))
         val without = sommelierInstructions(true, context = null)
