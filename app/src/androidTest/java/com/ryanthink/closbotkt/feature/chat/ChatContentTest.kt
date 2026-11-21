@@ -130,4 +130,43 @@ class ChatContentTest {
 
         assertEquals(listOf(true), burgundyChanges)
     }
+
+    // --- Markdown in replies ---
+    // The assistant is asked to reply in markdown. These tests say what the user should see instead of the raw
+    // symbols. The user's own messages are plain text and are never formatted.
+
+    private fun assistantSays(text: String) =
+        setContent(ChatUiState(messages = listOf(ChatMessage(text, ChatSender.ASSISTANT))))
+
+    @Test
+    fun showsBoldTextInAReplyWithoutTheAsterisks() {
+        assistantSays("Try a **Pinot Noir** with duck.")
+
+        composeRule.onNodeWithText("Try a Pinot Noir with duck.").assertIsDisplayed()
+        composeRule.onNodeWithText("**", substring = true).assertDoesNotExist()
+    }
+
+    @Test
+    fun showsAHeadingInAReplyWithoutTheHash() {
+        assistantSays("# Burgundy whites\n\nChablis is a good start.")
+
+        composeRule.onNodeWithText("Burgundy whites").assertIsDisplayed()
+        composeRule.onNodeWithText("#", substring = true).assertDoesNotExist()
+    }
+
+    @Test
+    fun showsEachListItemInAReplyWithoutTheDash() {
+        assistantSays("Try these:\n\n- Chablis\n- Meursault")
+
+        composeRule.onNodeWithText("Chablis").assertIsDisplayed()
+        composeRule.onNodeWithText("Meursault").assertIsDisplayed()
+        composeRule.onNodeWithText("- ", substring = true).assertDoesNotExist()
+    }
+
+    @Test
+    fun showsAUsersMessageExactlyAsTyped() {
+        setContent(ChatUiState(messages = listOf(ChatMessage("I like **bold** wines", ChatSender.USER))))
+
+        composeRule.onNodeWithText("I like **bold** wines").assertIsDisplayed()
+    }
 }

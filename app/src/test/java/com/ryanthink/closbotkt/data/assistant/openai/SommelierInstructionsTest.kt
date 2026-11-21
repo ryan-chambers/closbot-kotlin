@@ -116,4 +116,10 @@ class SommelierInstructionsTest {
 
         assertTrue(withContext.startsWith(without))
     }
+
+    @Test
+    fun `asks for markdown formatting`() {
+        assertTrue(sommelierInstructions(burgundyFocus = true, context = null).contains("markdown", ignoreCase = true))
+        assertTrue(sommelierInstructions(burgundyFocus = false, context = null).contains("markdown", ignoreCase = true))
+    }
 }
