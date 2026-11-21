@@ -66,6 +66,11 @@ android {
         compose = true
         buildConfig = true
     }
+    testOptions {
+        // Gradle hides a unit test's println unless it fails. The live tests report what they find that way (the notes
+        // retrieved, the replies), so show it in the console. Ordinary tests print nothing, so this adds no noise.
+        unitTests.all { test -> test.testLogging { showStandardStreams = true } }
+    }
 }
 
 ksp {
