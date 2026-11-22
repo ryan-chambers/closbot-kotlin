@@ -83,4 +83,19 @@ class OpenAiWineAssistantRepositoryLiveTest {
         println("Reply: $reply")
         assertTrue("The reply should remember Pinot Noir", reply.contains("Pinot Noir", ignoreCase = true))
     }
+
+    @Test
+    fun `replies in markdown`() = runBlocking {
+        settings.setBurgundyFocus(false)
+
+        val reply =
+            repository
+                .invokeChat("Give me a list of three white Burgundy wines to try, with a short note on each.")
+                .first()
+
+        println("Reply: $reply")
+        // Models vary, so accept any common markdown: bold, a heading, a bullet, or a numbered list.
+        val markdownMarkers = listOf("**", "#", "\n- ", "\n* ", "\n1.")
+        assertTrue("Expected markdown in the reply", markdownMarkers.any { reply.contains(it) })
+    }
 }

@@ -21,7 +21,7 @@ import com.ryanthink.closbotkt.data.knowledge.WineContext
 internal fun sommelierInstructions(burgundyFocus: Boolean, context: WineContext?): String {
     val fromWhere = if (burgundyFocus) " from Burgundy" else ""
     val systemPrompt =
-        "You are a sommelier with an expertise in wine $fromWhere. You are acting as my personal assistant. You will help answer any questions or comments about wine. Please return text only. Please respond in English."
+        "You are a sommelier with an expertise in wine $fromWhere. You are acting as my personal assistant. You will help answer any questions or comments about wine. Please respond in markdown. Please respond in English."
 
     return buildString {
         append(systemPrompt)
