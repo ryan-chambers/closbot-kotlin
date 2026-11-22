@@ -36,6 +36,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.mikepenz.markdown.m3.Markdown
 import com.ryanthink.closbotkt.R
 
 /** Stateful entry point: connects [ChatContent] to its [ChatViewModel]. */
@@ -147,7 +148,12 @@ private fun MessageBubble(text: String, sender: ChatSender) {
                 },
             modifier = Modifier.widthIn(max = 320.dp),
         ) {
-            Text(text = text, modifier = Modifier.padding(12.dp))
+            if (isUser) {
+                Text(text = text, modifier = Modifier.padding(12.dp))
+            } else {
+                // TODO Hoist the parse for anything non-trivial?
+                Markdown(text, modifier = Modifier.padding(12.dp))
+            }
         }
     }
 }

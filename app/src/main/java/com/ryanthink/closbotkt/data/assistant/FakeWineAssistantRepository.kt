@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.flow
 class FakeWineAssistantRepository @Inject constructor() : WineAssistantRepository {
 
     override fun invokeChat(userMessage: String): Flow<String> = flow {
+        // TODO return markdown
         emit("This is a canned response from the fake wine assistant.")
     }
 }
