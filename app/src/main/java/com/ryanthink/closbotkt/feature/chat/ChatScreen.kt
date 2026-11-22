@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mikepenz.markdown.m3.Markdown
+import com.mikepenz.markdown.model.rememberMarkdownState
 import com.ryanthink.closbotkt.R
 
 /** Stateful entry point: connects [ChatContent] to its [ChatViewModel]. */
@@ -151,8 +152,8 @@ private fun MessageBubble(text: String, sender: ChatSender) {
             if (isUser) {
                 Text(text = text, modifier = Modifier.padding(12.dp))
             } else {
-                // TODO Hoist the parse for anything non-trivial?
-                Markdown(text, modifier = Modifier.padding(12.dp))
+                val markdownState = rememberMarkdownState(text)
+                Markdown(markdownState, modifier = Modifier.padding(12.dp))
             }
         }
     }
